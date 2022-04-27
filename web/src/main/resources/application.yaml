@@ -1,0 +1,11 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: web
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/trucking
+    name: postrgres
+    password: shushkevich
