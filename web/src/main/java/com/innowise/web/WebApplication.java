@@ -1,13 +1,13 @@
-package com.example.core;
+package com.innowise.web;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class CoreApplication {
+public class WebApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(CoreApplication.class, args);
+        SpringApplication.run(WebApplication.class, args);
     }
 
 }

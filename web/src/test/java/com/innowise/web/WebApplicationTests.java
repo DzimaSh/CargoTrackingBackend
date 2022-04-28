@@ -1,10 +1,10 @@
-package com.example.core;
+package com.innowise.web;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class CoreApplicationTests {
+class WebApplicationTests {
 
     @Test
     void contextLoads() {
