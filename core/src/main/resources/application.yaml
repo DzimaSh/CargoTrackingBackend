@@ -1,0 +1,10 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: core
+
+logging:
+  level:
+    org.hibernate.SQL: debug
