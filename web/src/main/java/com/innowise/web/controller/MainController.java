@@ -1,8 +1,7 @@
 package com.innowise.web.controller;
 
-import com.innowise.web.project.About;
-import com.innowise.web.config.SpringConfig;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import com.innowise.web.project.ProjectParams;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,10 +10,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 public class MainController {
 
-    AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(SpringConfig.class);
+    private final ProjectParams params;
+
+    @Autowired
+    public MainController(ProjectParams params) {
+        this.params = params;
+    }
 
     @GetMapping("/about")
-    public About getInfoAboutProject() {
-        return (About)context.getBean("about");
+    public ProjectParams getInfoAboutProject() {
+        return params;
     }
 }

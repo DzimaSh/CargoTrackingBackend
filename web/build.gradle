@@ -19,21 +19,6 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
 }
 
-task createProperties(dependsOn: processResources) {
-    doLast {
-        new File("$buildDir/resources/main/projectParams.properties").withWriter { w ->
-            Properties p = new Properties()
-            p['version'] = project.version.toString()
-            p['name'] = project.parent.name.toString()
-            p.store w, null
-        }
-    }
-}
-
-classes {
-    dependsOn createProperties
-}
-
 tasks.named('test') {
     useJUnitPlatform()
 }
