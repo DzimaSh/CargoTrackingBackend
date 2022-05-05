@@ -1,0 +1,106 @@
+databaseChangeLog:
+
+
+  - changeSet:
+      id: 1
+      author: shushkevich
+      changes:
+        - sql:
+            endDeterminer: /nGO
+            sql: create type user_role as enum('SYS_ADMIN', 'ADMIN', 'DISPATCHER', 'MANAGER', 'DRIVER', 'COMPANY_OWNER')
+
+  - changeSet:
+      id: 2
+      author: shushkevich
+      changes:
+        createTable:
+          tableName: users
+          columns:
+            - column:
+                name: id
+                type: int8
+                autoIncrement: true
+                constraints:
+                  primaryKey: true
+                  nullable: false
+            - column:
+                name: name
+                type: varchar(20)
+            - column:
+                name: surname
+                type: varchar(20)
+                constraints:
+                  nullable: false
+            - column:
+                name: patronymic
+                type: varchar(20)
+            - column:
+                name: client_Id
+                type: int4
+            - column:
+                name: born_date
+                type: date
+            - column:
+                name: email
+                type: varchar(50)
+                constraints:
+                  unique: true
+                  nullable: false
+            - column:
+                name: town
+                type: varchar(20)
+            - column:
+                name: street
+                type: varchar(20)
+            - column:
+                name: house
+                type: varchar(5)
+            - column:
+                name: flat
+                type: varchar(5)
+            - column:
+                name: login
+                type: varchar(15)
+                constraints:
+                  unique: true
+                  nullable: false
+            - column:
+                name: password
+                type: varchar(72)
+                constraints:
+                  nullable: false
+            - column:
+                name: passport_number
+                type: varchar(30)
+            - column:
+                name: passport_issued_by
+                type: varchar(50)
+            - column:
+                name: roles
+                type: user_role[]
+                constraints:
+                  nullable: false
+
+#  - changeSet:
+#      id: 3
+#      author: shuhskevich
+#      chages:
+#        - insert:
+#            columns:
+#              - column:
+#                  name: surname
+#                  value: "shushkevich"
+#              - column:
+#                  name: email
+#                  value: "dzmitry.shushkevcih@gmail.com"
+#              - column:
+#                  name: login
+#                  value: "dzmitry"
+#              - column:
+#                  name: password
+#                  value: "1234"
+#              - column:
+#                  name: roles
+#                  value: "SYS_ADMIN"
+#            schemaName: public
+#            tableName: users

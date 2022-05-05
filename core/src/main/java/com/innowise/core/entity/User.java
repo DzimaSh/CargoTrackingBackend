@@ -1,13 +1,24 @@
 package com.innowise.core.entity;
 
+import com.vladmihalcea.hibernate.type.array.EnumArrayType;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.Date;
 
-@Entity(name = "user_table")
+@Entity(name = "users")
 @Table
+@TypeDefs({
+        @TypeDef(
+                name = "enum-array",
+                typeClass = EnumArrayType.class
+        )
+})
 public class User {
     @Id
     @SequenceGenerator(
@@ -33,7 +44,7 @@ public class User {
 
     private Integer clientId;
 
-    private Date date;
+    private Date bornDate;
 
     @NotEmpty(message = "Email is required")
     @Email(message = "Email isn't valid")
@@ -54,23 +65,22 @@ public class User {
 
     @NotEmpty(message = "Login is required")
     @Size(min = 5, message = "Login is too short")
-    @Size(max = 20, message = "Login is too long")
+    @Size(max = 15, message = "Login is too long")
     private String login;
 
     @NotEmpty(message = "Password is required")
     @Size(min = 5, message = "Password is too short")
-    @Size(max = 20, message = "Password is too long")
+    @Size(max = 72, message = "Password is too long")
     private String password;
 
-    @Size(max = 20, message = "Passport number size is too long")
+    @Size(max = 30, message = "Passport number size is too long")
     private String passportNum;
 
-    @Size(max = 20, message = "Establishment that have issued the passport name is too long")
+    @Size(max = 50, message = "Establishment that have issued the passport name is too long")
     private String issuedBy;
 
-    @Enumerated(EnumType.STRING)
-    @NotEmpty(message = "Role is required")
-    private UserRole role;
+    @Type(type = "enum-array")
+    private UserRole[] roles;
 
     public Integer getId() {
         return id;
@@ -87,8 +97,8 @@ public class User {
     public Integer getClientId() {
         return clientId;
     }
-    public Date getDate() {
-        return date;
+    public Date getBornDate() {
+        return bornDate;
     }
     public String getEmail() {
         return email;
@@ -117,7 +127,7 @@ public class User {
     public String getIssuedBy() {
         return issuedBy;
     }
-    public UserRole getRole() {
-        return role;
+    public UserRole[] getRoles() {
+        return roles;
     }
 }
