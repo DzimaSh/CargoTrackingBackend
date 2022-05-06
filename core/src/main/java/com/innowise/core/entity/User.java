@@ -1,15 +1,16 @@
 package com.innowise.core.entity;
 
 import com.vladmihalcea.hibernate.type.array.EnumArrayType;
+import lombok.Getter;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
-
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.Date;
+import java.util.List;
 
 @Entity(name = "users")
 @Table
@@ -19,6 +20,7 @@ import java.util.Date;
                 typeClass = EnumArrayType.class
         )
 })
+@Getter
 public class User {
     @Id
     @SequenceGenerator(
@@ -80,54 +82,6 @@ public class User {
     private String issuedBy;
 
     @Type(type = "enum-array")
-    private UserRole[] roles;
-
-    public Integer getId() {
-        return id;
-    }
-    public String getName() {
-        return name;
-    }
-    public String getSurname() {
-        return surname;
-    }
-    public String getPatronymic() {
-        return patronymic;
-    }
-    public Integer getClientId() {
-        return clientId;
-    }
-    public Date getBornDate() {
-        return bornDate;
-    }
-    public String getEmail() {
-        return email;
-    }
-    public String getTown() {
-        return town;
-    }
-    public String getStreet() {
-        return street;
-    }
-    public String getHouse() {
-        return house;
-    }
-    public String getFlat() {
-        return flat;
-    }
-    public String getLogin() {
-        return login;
-    }
-    public String getPassword() {
-        return password;
-    }
-    public String getPassportNum() {
-        return passportNum;
-    }
-    public String getIssuedBy() {
-        return issuedBy;
-    }
-    public UserRole[] getRoles() {
-        return roles;
-    }
+    @Transient
+    private List<UserRole> roles;
 }

@@ -1,6 +1,5 @@
 databaseChangeLog:
-
-
+  - logicalFilePath: db/changelog/db.changelog-master.yaml
   - changeSet:
       id: 1
       author: shushkevich
@@ -81,26 +80,26 @@ databaseChangeLog:
                 constraints:
                   nullable: false
 
-#  - changeSet:
-#      id: 3
-#      author: shuhskevich
-#      chages:
-#        - insert:
-#            columns:
-#              - column:
-#                  name: surname
-#                  value: "shushkevich"
-#              - column:
-#                  name: email
-#                  value: "dzmitry.shushkevcih@gmail.com"
-#              - column:
-#                  name: login
-#                  value: "dzmitry"
-#              - column:
-#                  name: password
-#                  value: "1234"
-#              - column:
-#                  name: roles
-#                  value: "SYS_ADMIN"
-#            schemaName: public
-#            tableName: users
+  - changeSet:
+      id: 3
+      author: your_liquibase_username
+      comment: "Create admin user"
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: surname
+                  value: "admin"
+              - column:
+                  name: email
+                  value: "admin@server.com"
+              - column:
+                  name: login
+                  value: "admin"
+              - column:
+                  name: password
+                  value: "admin"
+              - column:
+                  name: roles
+                  value: "{SYS_ADMIN}"
