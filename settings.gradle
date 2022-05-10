@@ -1,2 +1,2 @@
 rootProject.name = 'CargoTrackingBackend'
-include('web', 'core')
+include ':web', ':core'

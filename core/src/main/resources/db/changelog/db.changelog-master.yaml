@@ -17,7 +17,7 @@ databaseChangeLog:
           columns:
             - column:
                 name: id
-                type: int8
+                type: int
                 autoIncrement: true
                 constraints:
                   primaryKey: true
@@ -34,8 +34,8 @@ databaseChangeLog:
                 name: patronymic
                 type: varchar(20)
             - column:
-                name: client_Id
-                type: int4
+                name: client_id
+                type: int
             - column:
                 name: born_date
                 type: date
@@ -88,6 +88,9 @@ databaseChangeLog:
         - insert:
             tableName: users
             columns:
+              - column:
+                  name: name
+                  value: "admin"
               - column:
                   name: surname
                   value: "admin"

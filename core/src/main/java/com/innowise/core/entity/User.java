@@ -1,7 +1,9 @@
 package com.innowise.core.entity;
 
 import com.vladmihalcea.hibernate.type.array.EnumArrayType;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
@@ -10,10 +12,10 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.Date;
-import java.util.List;
+import java.util.EnumSet;
+import java.util.Set;
 
 @Entity(name = "users")
-@Table
 @TypeDefs({
         @TypeDef(
                 name = "enum-array",
@@ -21,6 +23,7 @@ import java.util.List;
         )
 })
 @Getter
+@NoArgsConstructor
 public class User {
     @Id
     @SequenceGenerator(
@@ -76,12 +79,44 @@ public class User {
     private String password;
 
     @Size(max = 30, message = "Passport number size is too long")
-    private String passportNum;
+    private String passportNumber;
 
     @Size(max = 50, message = "Establishment that have issued the passport name is too long")
-    private String issuedBy;
+    private String passportIssuedBy;
 
     @Type(type = "enum-array")
-    @Transient
-    private List<UserRole> roles;
+    @Enumerated(EnumType.STRING)
+    private UserRole[] roles;
+
+    public User(String name,
+                String surname,
+                String patronymic,
+                Integer clientId,
+                Date bornDate,
+                String email,
+                String town,
+                String street,
+                String house,
+                String flat,
+                String login,
+                String password,
+                String passportNumber,
+                String passportIssuedBy,
+                UserRole[] roles) {
+        this.name = name;
+        this.surname = surname;
+        this.patronymic = patronymic;
+        this.clientId = clientId;
+        this.bornDate = bornDate;
+        this.email = email;
+        this.town = town;
+        this.street = street;
+        this.house = house;
+        this.flat = flat;
+        this.login = login;
+        this.password = password;
+        this.passportNumber = passportNumber;
+        this.passportIssuedBy = passportIssuedBy;
+        this.roles = roles;
+    }
 }
