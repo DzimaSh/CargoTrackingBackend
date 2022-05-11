@@ -1,9 +1,7 @@
 package com.innowise.core.entity;
 
 import com.vladmihalcea.hibernate.type.array.EnumArrayType;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
@@ -11,9 +9,8 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
-import java.util.Date;
-import java.util.EnumSet;
-import java.util.Set;
+import java.sql.Date;
+import java.util.List;
 
 @Entity(name = "users")
 @TypeDefs({
@@ -22,19 +19,13 @@ import java.util.Set;
                 typeClass = EnumArrayType.class
         )
 })
-@Getter
+@Builder
+@Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class User {
     @Id
-    @SequenceGenerator(
-            name = "id_sequence",
-            sequenceName = "id_sequence",
-            allocationSize = 1
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "id_sequence"
-    )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Size(max = 20, message = "Name is too long")
@@ -47,8 +38,10 @@ public class User {
     @Size(max = 20, message = "Patronymic is too long")
     private String patronymic;
 
+    @Column(name = "client_id")
     private Integer clientId;
 
+    @Column(name = "born_date")
     private Date bornDate;
 
     @NotEmpty(message = "Email is required")
@@ -79,44 +72,17 @@ public class User {
     private String password;
 
     @Size(max = 30, message = "Passport number size is too long")
-    private String passportNumber;
+    @Column(name = "passport_number")
+    private String passportNum;
 
     @Size(max = 50, message = "Establishment that have issued the passport name is too long")
-    private String passportIssuedBy;
+    @Column(name = "passport_issued_by")
+    private String issuedBy;
 
-    @Type(type = "enum-array")
+    @ElementCollection(targetClass = UserRole.class)
+    @CollectionTable(name="user_roles_table")
     @Enumerated(EnumType.STRING)
-    private UserRole[] roles;
+    @Column(name = "userRoles")
+    private List<UserRole> userRoles;
 
-    public User(String name,
-                String surname,
-                String patronymic,
-                Integer clientId,
-                Date bornDate,
-                String email,
-                String town,
-                String street,
-                String house,
-                String flat,
-                String login,
-                String password,
-                String passportNumber,
-                String passportIssuedBy,
-                UserRole[] roles) {
-        this.name = name;
-        this.surname = surname;
-        this.patronymic = patronymic;
-        this.clientId = clientId;
-        this.bornDate = bornDate;
-        this.email = email;
-        this.town = town;
-        this.street = street;
-        this.house = house;
-        this.flat = flat;
-        this.login = login;
-        this.password = password;
-        this.passportNumber = passportNumber;
-        this.passportIssuedBy = passportIssuedBy;
-        this.roles = roles;
-    }
 }

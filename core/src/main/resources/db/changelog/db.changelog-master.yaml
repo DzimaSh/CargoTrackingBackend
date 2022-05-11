@@ -4,14 +4,6 @@ databaseChangeLog:
       id: 1
       author: shushkevich
       changes:
-        - sql:
-            endDeterminer: /nGO
-            sql: create type user_role as enum('SYS_ADMIN', 'ADMIN', 'DISPATCHER', 'MANAGER', 'DRIVER', 'COMPANY_OWNER')
-
-  - changeSet:
-      id: 2
-      author: shushkevich
-      changes:
         createTable:
           tableName: users
           columns:
@@ -74,16 +66,27 @@ databaseChangeLog:
             - column:
                 name: passport_issued_by
                 type: varchar(50)
-            - column:
-                name: roles
-                type: user_role[]
-                constraints:
-                  nullable: false
 
   - changeSet:
-      id: 3
-      author: your_liquibase_username
-      comment: "Create admin user"
+      id: 2
+      author: shushkevich
+      changes:
+        createTable:
+          tableName: user_roles_table
+          columns:
+            - column:
+                name: users_id
+                type: int4
+                constraints:
+                  nullable: false
+                  foreignKeyName: user
+                  references: users(id)
+            - column:
+                name: user_roles
+                type: varchar(30)
+  - changeSet:
+      id: 4
+      author: some
       changes:
         - insert:
             tableName: users
@@ -103,6 +106,17 @@ databaseChangeLog:
               - column:
                   name: password
                   value: "admin"
+  - changeSet:
+      id: 3
+      author: your_liquibase_username
+      comment: "Create admin user"
+      changes:
+        - insert:
+            tableName: user_roles_table
+            columns:
               - column:
-                  name: roles
-                  value: "{SYS_ADMIN}"
+                  name: users_id
+                  value: 5
+              - column:
+                  name: user_roles
+                  value: "SYS_ADMIN"

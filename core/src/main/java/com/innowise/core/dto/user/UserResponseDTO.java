@@ -1,15 +1,18 @@
-package com.innowise.web.dto.response;
+package com.innowise.core.dto.user;
 
 import com.innowise.core.entity.User;
 import com.innowise.core.entity.UserRole;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
-public class GetUserResponse {
+@NoArgsConstructor
+public class UserResponseDTO {
     private Integer id;
     private String name;
     private String surname;
@@ -23,11 +26,11 @@ public class GetUserResponse {
     private String flat;
     private String login;
     private String password;
-    private String passportNumber;
-    private String passportIssuedBy;
-    private UserRole[] roles;
+    private String passportNum;
+    private String issuedBy;
+    private List<UserRole> userRoles;
 
-    public GetUserResponse(User user) {
+    public UserResponseDTO(User user) {
         id = user.getId();
         name = user.getName();
         surname = user.getSurname();
@@ -41,8 +44,8 @@ public class GetUserResponse {
         flat = user.getFlat();
         login = user.getLogin();
         password = user.getPassword();
-        passportNumber = user.getPassportNumber();
-        passportIssuedBy = user.getPassportIssuedBy();
-        roles = user.getRoles();
+        passportNum = user.getPassportNum();
+        issuedBy = user.getIssuedBy();
+        userRoles = user.getUserRoles();
     }
 }
