@@ -1,24 +1,14 @@
 package com.innowise.core.entity;
 
-import com.vladmihalcea.hibernate.type.array.EnumArrayType;
 import lombok.*;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-import org.hibernate.annotations.TypeDefs;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.sql.Date;
-import java.util.List;
+import java.util.Set;
 
 @Entity(name = "users")
-@TypeDefs({
-        @TypeDef(
-                name = "enum-array",
-                typeClass = EnumArrayType.class
-        )
-})
 @Builder
 @Data
 @NoArgsConstructor
@@ -83,6 +73,6 @@ public class User {
     @CollectionTable(name="user_roles_table")
     @Enumerated(EnumType.STRING)
     @Column(name = "userRoles")
-    private List<UserRole> userRoles;
+    private Set<UserRole> userRoles;
 
 }

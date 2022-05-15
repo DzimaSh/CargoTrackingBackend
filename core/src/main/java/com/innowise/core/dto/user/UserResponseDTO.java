@@ -6,8 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
-import java.util.List;
+import java.sql.Date;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -28,7 +28,7 @@ public class UserResponseDTO {
     private String password;
     private String passportNum;
     private String issuedBy;
-    private List<UserRole> userRoles;
+    private Set<UserRole> userRoles;
 
     public UserResponseDTO(User user) {
         id = user.getId();

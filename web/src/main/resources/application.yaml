@@ -8,3 +8,6 @@ spring:
     url: jdbc:postgresql://localhost:5432/trucking
     username: postgres
     password: shushkevich
+
+service:
+  user-core-url: http://localhost:8081

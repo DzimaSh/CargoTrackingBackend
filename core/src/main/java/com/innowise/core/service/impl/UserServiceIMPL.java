@@ -6,48 +6,67 @@ import com.innowise.core.exceprtion.UserNotFoundException;
 import com.innowise.core.repository.UserRepository;
 import com.innowise.core.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.sql.Date;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.*;
+import javax.persistence.metamodel.EntityType;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceIMPL implements UserService {
+    private final EntityManager entityManager;
     private final UserRepository repository;
 
     @Override
     public User getUserById(Integer id) {
         return repository.findById(id).orElseThrow(() -> new UserNotFoundException("account not find" + id));
     }
-    @Override
-    public List<User> getAllUsers() {
-        return repository.findAll();
-    }
 
     @Override
-    public List<User> getUsersByParams(User exampleUser) {
-        return repository.findAll(Example.of(exampleUser));
-    }
-
-    @Override
-    public List<User> getUsersByRoles(String roles) {
-        UserRole userRoles = UserRole.valueOf(roles);
-        return new ArrayList<>();
+    public Page<User> getAllUsersByFilterParams(String name, String surname, String patronymic,
+                                                Date beforeBornDate, Date afterBornDate, String town,
+                                                String street, String house, String flat,
+                                                String[] roles, Pageable pageable) {
+        EntityType<User> User_ = entityManager.getMetamodel().entity(User.class);
+        return repository.findAll(((root, query, builder) -> {
+            query.multiselect();
+            List<Predicate> predicates = new ArrayList<>();
+            if (name != null)
+                predicates.add(builder.equal(root.get("name"), name));
+            if (surname != null)
+                predicates.add(builder.equal(root.get("surname"), surname));
+            if (patronymic != null)
+                predicates.add(builder.equal(root.get("patronymic"), patronymic));
+            if (beforeBornDate != null)
+                predicates.add(builder.greaterThan(root.get("bornDate"), new java.sql.Date(beforeBornDate.getTime())));
+            if (afterBornDate != null)
+                predicates.add(builder.greaterThan(root.get("bornDate"), new java.sql.Date(afterBornDate.getTime())));
+            if (town != null)
+                predicates.add(builder.equal(root.get("town"), town));
+            if (street != null)
+                predicates.add(builder.equal(root.get("street"), street));
+            if (house != null)
+                predicates.add(builder.equal(root.get("house"), house));
+            if (flat != null)
+                predicates.add(builder.equal(root.get("flat"), flat));
+            if (roles != null) {
+                SetJoin role = root.join(User_.getSet("userRoles", UserRole.class));
+                predicates.add(role.in(Arrays.stream(roles).map(UserRole::valueOf).toArray()));
+                query.groupBy(root.get("id")).having(builder.equal(builder.countDistinct(role), roles.length));
+            }
+            return builder.and(predicates.toArray(new Predicate[]{}));
+        }), pageable);
     }
 
     @Override
     public Integer postUser(User user) {
-        Integer id = repository.save(user).getId();
-        return id;
-    }
-
-    public List<User> getUserByDate(Date date) {
-        return repository.getAllByBornDateAfter(date);
+        return repository.save(user).getId();
     }
 }

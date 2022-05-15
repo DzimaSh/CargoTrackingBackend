@@ -85,8 +85,9 @@ databaseChangeLog:
                 name: user_roles
                 type: varchar(30)
   - changeSet:
-      id: 4
+      id: 3
       author: some
+      comment: "create SYS_ADMIN user"
       changes:
         - insert:
             tableName: users
@@ -106,17 +107,12 @@ databaseChangeLog:
               - column:
                   name: password
                   value: "admin"
-  - changeSet:
-      id: 3
-      author: your_liquibase_username
-      comment: "Create admin user"
-      changes:
         - insert:
             tableName: user_roles_table
             columns:
               - column:
                   name: users_id
-                  value: 5
+                  value: 1
               - column:
                   name: user_roles
                   value: "SYS_ADMIN"

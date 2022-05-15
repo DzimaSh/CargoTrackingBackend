@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Date;
-import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -29,7 +29,7 @@ public class UserRequestDTO {
     private String password;
     private String passportNum;
     private String issuedBy;
-    private List<UserRole> userRoles;
+    private Set<UserRole> userRoles;
 
     public User buildUser() {
         return User.builder().

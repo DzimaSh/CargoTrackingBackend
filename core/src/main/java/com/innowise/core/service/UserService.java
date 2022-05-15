@@ -1,20 +1,17 @@
 package com.innowise.core.service;
 
 import com.innowise.core.entity.User;
-import com.innowise.core.entity.UserRole;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.List;
 
 public interface UserService {
     User getUserById(Integer id);
-
     Integer postUser(User user);
-    List<User> getAllUsers();
-
-    List<User> getUsersByParams(User exampleUser);
-
-    List<User> getUsersByRoles(String role);
-
-    List<User> getUserByDate(Date date);
+    Page<User> getAllUsersByFilterParams(String name, String surname, String patronymic,
+                                         Date beforeBornDate, Date afterBornDate, String town,
+                                         String street, String house, String flat,
+                                         String[] roles, Pageable pageable);
 }

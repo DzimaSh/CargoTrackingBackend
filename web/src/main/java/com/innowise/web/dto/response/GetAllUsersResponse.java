@@ -5,15 +5,16 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 @Getter
 @Setter
 public class GetAllUsersResponse {
     private List<UserResponseDTO> content;
-    private int totalElements;
+    private Long totalElements;
 
-    public GetAllUsersResponse(List<UserResponseDTO> content) {
+    public GetAllUsersResponse(List<UserResponseDTO> content, Long totalElements) {
         this.content = content;
-        totalElements = content.size();
+        this.totalElements = totalElements;
     }
 }
