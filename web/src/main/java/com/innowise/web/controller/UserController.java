@@ -2,6 +2,7 @@ package com.innowise.web.controller;
 
 import com.innowise.core.dto.user.UserRequestDTO;
 import com.innowise.core.dto.user.UserResponseDTO;
+import com.innowise.web.dto.request.UpdateUserRequest;
 import com.innowise.web.dto.response.GetAllUsersResponse;
 import com.innowise.web.feign.UserFeignClient;
 import lombok.RequiredArgsConstructor;
@@ -41,17 +42,19 @@ public class UserController {
     public UserResponseDTO getUser(@PathVariable Integer id) {
         return client.getUserById(id);
     }
+
     @PostMapping
     public String insertUser(@RequestBody UserRequestDTO userRequest) {
         return client.postUser(userRequest);
     }
 
-    @PostMapping("/date")
-    public void date(@RequestParam(name = "beforeBornDate", required = false)
-                     @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
-        System.out.println("123\n\n\n" + date);
-        java.sql.Date date1 = new java.sql.Date(date.getTime());
-        System.out.println(date1);
-        //return "123\n\n\n" + date;
+    @DeleteMapping
+    public void deleteUser(@RequestBody Integer[] ids) {
+        client.deleteUser(ids);
+    }
+
+    @PutMapping("/{id}")
+    public void updateUser(@RequestBody UpdateUserRequest request, @PathVariable Integer id) {
+        client.updateUser(request, id);
     }
 }

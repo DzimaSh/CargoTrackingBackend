@@ -2,6 +2,7 @@ package com.innowise.web.feign;
 
 import com.innowise.core.dto.user.UserRequestDTO;
 import com.innowise.core.dto.user.UserResponseDTO;
+import com.innowise.web.dto.request.UpdateUserRequest;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.data.util.Pair;
@@ -37,4 +38,10 @@ public interface UserFeignClient {
 
     @PostMapping
     String postUser(@RequestBody UserRequestDTO request);
+
+    @DeleteMapping
+    void deleteUser(@RequestBody Integer[] ids);
+
+    @PutMapping("/{id}")
+    void updateUser(@RequestBody UpdateUserRequest request, @PathVariable Integer id);
 }

@@ -6,6 +6,7 @@ import com.innowise.core.exceprtion.UserNotFoundException;
 import com.innowise.core.repository.UserRepository;
 import com.innowise.core.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,7 @@ public class UserServiceIMPL implements UserService {
 
     @Override
     public User getUserById(Integer id) {
-        return repository.findById(id).orElseThrow(() -> new UserNotFoundException("account not find" + id));
+        return repository.findById(id).orElseThrow(() -> new UserNotFoundException("account not find with id " + id));
     }
 
     @Override
@@ -68,5 +69,21 @@ public class UserServiceIMPL implements UserService {
     @Override
     public Integer postUser(User user) {
         return repository.save(user).getId();
+    }
+
+    @Override
+    public void deleteUsersById(Integer[] ids) {
+        try {
+            repository.deleteAllById(Arrays.asList(ids));
+        } catch (EmptyResultDataAccessException exception) {
+            throw new UserNotFoundException(exception.getMessage());
+        }
+    }
+
+    @Override
+    public void updateUser(User updatedUser, Integer id) {
+        User userToUpdate = this.getUserById(id);
+        updatedUser.setId(userToUpdate.getId());
+        repository.save(updatedUser);
     }
 }

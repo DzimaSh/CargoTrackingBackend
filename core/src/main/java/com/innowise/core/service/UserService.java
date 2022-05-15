@@ -14,4 +14,6 @@ public interface UserService {
                                          Date beforeBornDate, Date afterBornDate, String town,
                                          String street, String house, String flat,
                                          String[] roles, Pageable pageable);
+    void deleteUsersById(Integer[] ids);
+    void updateUser(User updatedUser, Integer id);
 }

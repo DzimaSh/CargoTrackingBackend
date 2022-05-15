@@ -1,6 +1,5 @@
 package com.innowise.core.controller;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreType;
 import com.innowise.core.dto.user.UserRequestDTO;
 import com.innowise.core.dto.user.UserResponseDTO;
 import com.innowise.core.entity.User;
@@ -8,12 +7,10 @@ import com.innowise.core.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.Pair;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -58,5 +55,15 @@ public class UserController {
         User user = userRequest.buildUser();
         Integer id = service.postUser(user);
         return "currentUri/" + id;
+    }
+
+    @DeleteMapping
+    private void deleteUser(@RequestBody Integer[] ids) {
+        service.deleteUsersById(ids);
+    }
+
+    @PutMapping("/{id}")
+    private void updateUser(@RequestBody UserRequestDTO request, @PathVariable Integer id) {
+        service.updateUser(request.buildUser(), id);
     }
 }
