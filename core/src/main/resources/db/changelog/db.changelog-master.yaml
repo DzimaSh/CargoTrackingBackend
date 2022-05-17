@@ -3,6 +3,7 @@ databaseChangeLog:
   - changeSet:
       id: 1
       author: shushkevich
+      comment: "Create users table"
       changes:
         createTable:
           tableName: users
@@ -70,6 +71,7 @@ databaseChangeLog:
   - changeSet:
       id: 2
       author: shushkevich
+      comment: "Create user_roles table and make SYS_ADMIN role unique"
       changes:
         createTable:
           tableName: user_roles_table
@@ -86,6 +88,14 @@ databaseChangeLog:
                 type: varchar(30)
   - changeSet:
       id: 3
+      author: shushkevich
+      comment: "make SYS_ADMIN unique"
+      changes:
+        - sql:
+            endDetemiter: \nGO
+            sql: CREATE UNIQUE INDEX idx_userroles ON public.user_roles_table(user_roles) WHERE user_roles = 'SYS_ADMIN';
+  - changeSet:
+      id: 4
       author: some
       comment: "create SYS_ADMIN user"
       changes:
