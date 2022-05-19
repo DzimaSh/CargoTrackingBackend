@@ -1,4 +1,4 @@
-package com.innowise.web.dto.request;
+package com.innowise.core.dto.user.request;
 
 import com.innowise.core.entity.UserRole;
 import lombok.AllArgsConstructor;
@@ -14,7 +14,7 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UpdateUserRequest {
+public class PutUserRequest {
     @Size(max = 20, message = "Name is too long")
     private String name;
 
@@ -65,6 +65,6 @@ public class UpdateUserRequest {
     @NotNull(message = "at least one role is required")
     private Set<UserRole> userRoles;
 
-    @NotNull(message = "")
+    @NotNull
     private Boolean isChangePassword;
 }

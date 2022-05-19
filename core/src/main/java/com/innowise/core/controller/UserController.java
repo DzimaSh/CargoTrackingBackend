@@ -1,69 +1,52 @@
 package com.innowise.core.controller;
 
-import com.innowise.core.dto.user.UserRequestDTO;
-import com.innowise.core.dto.user.UserResponseDTO;
+import com.innowise.core.controller.util.GetUsersFilterParams;
+import com.innowise.core.dto.user.response.GetUsersResponse;
+import com.innowise.core.dto.user.request.PostUserRequest;
+import com.innowise.core.dto.user.response.GetUserByIdResponse;
 import com.innowise.core.entity.User;
 import com.innowise.core.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.util.Pair;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 @RequiredArgsConstructor
 public class UserController {
 
-    private final UserService service;
+    private final UserService userService;
     @GetMapping
-    private Pair<List<UserResponseDTO>, Long> getUsers(@RequestParam(name = "name", required = false) String name,
-                                           @RequestParam(name = "surname", required = false) String surname,
-                                           @RequestParam(name = "patronymic", required = false) String patronymic,
-                                           @RequestParam(name = "beforeBornDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date beforeBornDate,
-                                           @RequestParam(name = "afterBornDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date afterBornDate,
-                                           @RequestParam(name = "town", required = false) String town,
-                                           @RequestParam(name = "street", required = false) String street,
-                                           @RequestParam(name = "house", required = false) String house,
-                                           @RequestParam(name = "flat", required = false) String flat,
-                                           @RequestParam(name = "userRoles", required = false) String[] roles,
-                                           @RequestParam(name = "pageSize", defaultValue = "5") Integer pageSize,
-                                           @RequestParam(name = "pageNumber", defaultValue = "0") Integer pageNumber) {
-        Page<User> page = service.getAllUsersByFilterParams(name, surname, patronymic,
-                beforeBornDate, afterBornDate, town,
-                street, house, flat,
-                roles, PageRequest.of(pageNumber, pageSize));
-        List<UserResponseDTO> users = page.getContent().stream().
-                map(UserResponseDTO::new).
+    private GetUsersResponse getUsers(GetUsersFilterParams params) {
+        Page<User> page = userService.getAllUsersByFilterParams(params);
+        List<GetUserByIdResponse> users = page.getContent().stream().
+                map(GetUserByIdResponse::new).
                 collect(Collectors.toList());
-        Pair<List<UserResponseDTO>, Long> pair = Pair.of(users, page.getTotalElements());
-        return pair;
+        return new GetUsersResponse(users, page.getTotalElements());
     }
 
     @GetMapping("/{id}")
-    private UserResponseDTO getUser(@PathVariable Integer id) {
-        return new UserResponseDTO(service.getUserById(id));
+    private GetUserByIdResponse getUser(@PathVariable Integer id) {
+        return new GetUserByIdResponse(userService.getUserById(id));
     }
 
     @PostMapping
-    private String postUser(@RequestBody UserRequestDTO userRequest){
+    private String postUser(@RequestBody PostUserRequest userRequest){
         User user = userRequest.buildUser();
-        Integer id = service.postUser(user);
+        Integer id = userService.createUser(user);
         return "currentUri/" + id;
     }
 
     @DeleteMapping
-    private void deleteUser(@RequestBody Integer[] ids) {
-        service.deleteUsersById(ids);
+    private void deleteUser(@RequestBody List<Integer> usersIds) {
+        userService.deleteUsersById(usersIds);
     }
 
     @PutMapping("/{id}")
-    private void updateUser(@RequestBody UserRequestDTO request, @PathVariable Integer id) {
-        service.updateUser(request.buildUser(), id);
+    private void updateUser(@RequestBody PostUserRequest request, @PathVariable Integer id) {
+        userService.updateUser(request.buildUser(), id);
     }
 }

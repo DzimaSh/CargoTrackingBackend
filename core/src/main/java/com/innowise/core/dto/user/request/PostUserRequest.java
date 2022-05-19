@@ -1,4 +1,4 @@
-package com.innowise.core.dto.user;
+package com.innowise.core.dto.user.request;
 
 import com.innowise.core.entity.User;
 import com.innowise.core.entity.UserRole;
@@ -15,7 +15,7 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserRequestDTO {
+public class PostUserRequest {
 
     @Size(max = 20, message = "Name is too long")
     private String name;

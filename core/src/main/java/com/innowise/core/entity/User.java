@@ -15,12 +15,9 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-
     private String name;
 
-
     private String surname;
-
 
     private String patronymic;
 
@@ -30,24 +27,17 @@ public class User {
     @Column(name = "born_date")
     private Date bornDate;
 
-
     private String email;
-
 
     private String town;
 
-
     private String street;
-
 
     private String house;
 
-
     private String flat;
 
-
     private String login;
-
 
     private String password;
 

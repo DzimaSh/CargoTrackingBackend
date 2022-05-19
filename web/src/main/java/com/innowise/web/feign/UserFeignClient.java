@@ -1,47 +1,36 @@
 package com.innowise.web.feign;
 
-import com.innowise.core.dto.user.UserRequestDTO;
-import com.innowise.core.dto.user.UserResponseDTO;
-import com.innowise.web.dto.request.UpdateUserRequest;
+import com.innowise.core.controller.util.GetUsersFilterParams;
+import com.innowise.core.dto.user.request.PostUserRequest;
+import com.innowise.core.dto.user.request.PutUserRequest;
+import com.innowise.core.dto.user.response.GetUsersResponse;
+import com.innowise.core.dto.user.response.GetUserByIdResponse;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.data.util.Pair;
-import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.List;
 
 @ConditionalOnProperty(value = "service.user-core-url")
 @FeignClient(
         name = "UserFeignClient",
         url = "${service.user-core-url}",
-        path = "/users"
+        path = "/api/users"
 )
 public interface UserFeignClient {
     @GetMapping(value = "/{id}")
-    UserResponseDTO getUserById(@PathVariable Integer id);
+    GetUserByIdResponse getUserById(@PathVariable Integer id);
 
     @GetMapping
-    Pair<List<UserResponseDTO>, Long> getUsersByFilterParams(@RequestParam(name = "name", required = false) String name,
-                                                                @RequestParam(name = "surname", required = false) String surname,
-                                                                @RequestParam(name = "patronymic", required = false) String patronymic,
-                                                                @RequestParam(name = "beforeBornDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date beforeBornDate,
-                                                                @RequestParam(name = "afterBornDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date afterBornDate,
-                                                                @RequestParam(name = "town", required = false) String town,
-                                                                @RequestParam(name = "street", required = false) String street,
-                                                                @RequestParam(name = "house", required = false) String house,
-                                                                @RequestParam(name = "flat", required = false) String flat,
-                                                                @RequestParam(name = "userRoles", required = false) String[] roles,
-                                                                @RequestParam(name = "pageSize", required = false) Integer pageSize,
-                                                                @RequestParam(name = "pageNumber", required = false) Integer pageNumber);
+    GetUsersResponse getUsersByFilterParams(@SpringQueryMap(true) GetUsersFilterParams params);
 
     @PostMapping
-    String postUser(@RequestBody UserRequestDTO request);
+    String postUser(@RequestBody PostUserRequest request);
 
     @DeleteMapping
-    void deleteUser(@RequestBody Integer[] ids);
+    void deleteUser(@RequestBody List<Integer> usersIds);
 
     @PutMapping("/{id}")
-    void updateUser(@RequestBody UpdateUserRequest request, @PathVariable Integer id);
+    void updateUser(@RequestBody PutUserRequest request, @PathVariable Integer id);
 }

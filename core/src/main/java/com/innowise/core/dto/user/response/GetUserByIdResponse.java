@@ -1,4 +1,4 @@
-package com.innowise.core.dto.user;
+package com.innowise.core.dto.user.response;
 
 import com.innowise.core.entity.User;
 import com.innowise.core.entity.UserRole;
@@ -12,7 +12,7 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-public class UserResponseDTO {
+public class GetUserByIdResponse {
     private Integer id;
     private String name;
     private String surname;
@@ -30,7 +30,7 @@ public class UserResponseDTO {
     private String issuedBy;
     private Set<UserRole> userRoles;
 
-    public UserResponseDTO(User user) {
+    public GetUserByIdResponse(User user) {
         id = user.getId();
         name = user.getName();
         surname = user.getSurname();
