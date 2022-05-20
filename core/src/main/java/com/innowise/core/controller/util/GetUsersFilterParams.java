@@ -5,7 +5,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
-//@Builder(toBuilder = true)
 @Getter
 @ToString
 @Setter

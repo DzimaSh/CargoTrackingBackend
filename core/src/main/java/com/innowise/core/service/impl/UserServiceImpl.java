@@ -22,7 +22,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceIMPL implements UserService {
+public class UserServiceImpl implements UserService {
     private final EntityManager entityManager;
     private final UserRepository repository;
 

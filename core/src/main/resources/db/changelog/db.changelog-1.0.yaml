@@ -96,7 +96,7 @@ databaseChangeLog:
             sql: CREATE UNIQUE INDEX idx_userroles ON public.user_roles_table(user_roles) WHERE user_roles = 'SYS_ADMIN';
   - changeSet:
       id: 4
-      author: some
+      author: shushkevich
       comment: "create SYS_ADMIN user"
       changes:
         - insert:
