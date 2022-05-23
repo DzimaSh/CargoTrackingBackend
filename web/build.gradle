@@ -15,6 +15,7 @@ repositories {
 dependencies {
     compileOnly project(':core')
     //implementation 'org.springframework.boot:spring-boot-starter-security'
+    //implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:3.1.2'
     implementation 'org.springframework.data:spring-data-commons:2.7.0'
@@ -23,11 +24,26 @@ dependencies {
     implementation 'org.projectlombok:lombok:1.18.20'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+    compileOnly 'org.projectlombok:lombok:1.18.24'
+    compileOnly 'org.projectlombok:lombok-maven-plugin:1.18.20.0'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    annotationProcessor 'org.projectlombok:lombok'
+    implementation 'org.springframework.boot:spring-boot-starter-parent:2.6.7'
+    implementation 'org.apache.maven.plugins:maven-compiler-plugin:3.10.1'
 }
 
 task prepareKotlinBuildScriptModel {
 }
 
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+tasks.named('compileJava') {
+    inputs.files(tasks.named('processResources'))
+}
 tasks.named('test') {
     useJUnitPlatform()
 }
