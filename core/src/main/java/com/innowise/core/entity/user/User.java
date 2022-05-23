@@ -1,5 +1,6 @@
-package com.innowise.core.entity;
+package com.innowise.core.entity.user;
 
+import com.innowise.core.entity.role.Role;
 import lombok.*;
 import javax.persistence.*;
 import java.sql.Date;
@@ -46,10 +47,12 @@ public class User {
     @Column(name = "passport_issued_by")
     private String issuedBy;
 
-    @ElementCollection(targetClass = UserRole.class)
-    @CollectionTable(name="user_roles_table")
-    @Enumerated(EnumType.STRING)
-    @Column(name = "userRoles")
-    private Set<UserRole> userRoles;
+    @ManyToMany
+    @JoinTable(
+            name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<Role> roles;
 
 }

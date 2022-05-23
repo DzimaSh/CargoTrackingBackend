@@ -4,14 +4,12 @@ import com.innowise.core.controller.util.GetUsersFilterParams;
 import com.innowise.core.dto.user.response.GetUsersResponse;
 import com.innowise.core.dto.user.request.PostUserRequest;
 import com.innowise.core.dto.user.response.GetUserByIdResponse;
-import com.innowise.core.entity.User;
+import com.innowise.core.entity.user.User;
 import com.innowise.core.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/users")
@@ -21,16 +19,12 @@ public class UserController {
     private final UserService userService;
     @GetMapping
     private GetUsersResponse getUsers(GetUsersFilterParams params) {
-        Page<User> page = userService.getAllUsersByFilterParams(params);
-        List<GetUserByIdResponse> users = page.getContent().stream().
-                map(GetUserByIdResponse::new).
-                collect(Collectors.toList());
-        return new GetUsersResponse(users, page.getTotalElements());
+        return userService.getAllUsersByFilterParams(params);
     }
 
     @GetMapping("/{id}")
     private GetUserByIdResponse getUser(@PathVariable Integer id) {
-        return new GetUserByIdResponse(userService.getUserById(id));
+        return userService.getUserById(id);
     }
 
     @PostMapping

@@ -1,5 +1,6 @@
-package com.innowise.core.entity;
+package com.innowise.core.entity.user;
 
+import com.innowise.core.entity.role.Role;
 import org.hibernate.metamodel.model.domain.internal.SetAttributeImpl;
 
 import javax.annotation.Generated;
@@ -11,7 +12,7 @@ import java.util.Set;
 @Generated(value = "org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor")
 @StaticMetamodel(User.class)
 public class User_ {
-    public static volatile SingularAttribute<User, String> id;
+    public static volatile SingularAttribute<User, Integer> id;
     public static volatile SingularAttribute<User, String> name;
     public static volatile SingularAttribute<User, String> surname;
     public static volatile SingularAttribute<User, String> patronymic;
@@ -26,7 +27,7 @@ public class User_ {
     public static volatile SingularAttribute<User, String> password;
     public static volatile SingularAttribute<User, String> passportNum;
     public static volatile SingularAttribute<User, String> issuedBy;
-    public static volatile SetAttributeImpl<User, Set<UserRole>> userRoles;
+    public static volatile SetAttributeImpl<User, Set<Role>> roles;
 
     public static final String ID = "id";
     public static final String NAME = "name";
@@ -43,6 +44,6 @@ public class User_ {
     public static final String PASSWORD = "password";
     public static final String PASSPORT_NUM = "passportNum";
     public static final String ISSUED_BY = "issuedBy";
-    public static final String USER_ROLES = "userRoles";
+    public static final String ROLES = "roles";
 
 }

@@ -67,35 +67,114 @@ databaseChangeLog:
             - column:
                 name: passport_issued_by
                 type: varchar(50)
-
   - changeSet:
       id: 2
       author: shushkevich
-      comment: "Create user_roles table"
+      comment: "Create roles table"
       changes:
         createTable:
-          tableName: user_roles_table
+          tableName: roles
           columns:
             - column:
-                name: users_id
+                name: id
                 type: int4
                 constraints:
+                  primaryKey: true
                   nullable: false
-                  foreignKeyName: user
-                  references: users(id)
             - column:
-                name: user_roles
+                name: role
                 type: varchar(30)
   - changeSet:
       id: 3
+      author: shushkevich
+      comment: "add all roles in roles table"
+      changes:
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: id
+                  value: 0
+              - column:
+                  name: role
+                  value: "SYS_ADMIN"
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: role
+                  value: "ADMIN"
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: id
+                  value: 2
+              - column:
+                  name: role
+                  value: "DISPATCHER"
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: id
+                  value: 3
+              - column:
+                  name: role
+                  value: "MANAGER"
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: id
+                  value: 4
+              - column:
+                  name: role
+                  value: "DRIVER"
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: id
+                  value: 5
+              - column:
+                  name: role
+                  value: "COMPANY_OWNER"
+  - changeSet:
+      id: 4
+      author: shushkevich
+      comment: "create bridge table between users and roles"
+      changes:
+        createTable:
+          tableName: users_roles
+          columns:
+            - column:
+                name: user_id
+                type: int4
+                constraints:
+                  foreignKeyName: fk_user_id
+                  references: users(id)
+                  nullable: false
+            - column:
+                name: role_id
+                type: int4
+                constraints:
+                  foreignKeyName: fk_role_id
+                  references: roles(id)
+                  nullable: false
+  - changeSet:
+      id: 5
       author: shushkevich
       comment: "make SYS_ADMIN unique"
       changes:
         - sql:
             endDetemiter: \nGO
-            sql: CREATE UNIQUE INDEX idx_userroles ON public.user_roles_table(user_roles) WHERE user_roles = 'SYS_ADMIN';
+            sql: CREATE UNIQUE INDEX idx_users_roles ON public.users_roles(role_id) WHERE role_id = 0;
   - changeSet:
-      id: 4
+      id: 6
       author: shushkevich
       comment: "create SYS_ADMIN user"
       changes:
@@ -118,11 +197,11 @@ databaseChangeLog:
                   name: password
                   value: "admin"
         - insert:
-            tableName: user_roles_table
+            tableName: users_roles
             columns:
               - column:
-                  name: users_id
+                  name: user_id
                   value: 1
               - column:
-                  name: user_roles
-                  value: "SYS_ADMIN"
+                  name: role_id
+                  value: 0

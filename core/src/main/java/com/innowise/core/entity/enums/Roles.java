@@ -1,6 +1,6 @@
-package com.innowise.core.entity;
+package com.innowise.core.entity.enums;
 
-public enum UserRole {
+public enum Roles {
     SYS_ADMIN,
     ADMIN,
     DISPATCHER,

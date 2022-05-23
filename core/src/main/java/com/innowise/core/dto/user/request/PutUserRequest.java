@@ -1,6 +1,6 @@
 package com.innowise.core.dto.user.request;
 
-import com.innowise.core.entity.UserRole;
+import com.innowise.core.entity.enums.Roles;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -63,7 +63,7 @@ public class PutUserRequest {
     private String issuedBy;
 
     @NotNull(message = "at least one role is required")
-    private Set<UserRole> userRoles;
+    private Set<Roles> userRoles;
 
     @NotNull
     private Boolean isChangePassword;

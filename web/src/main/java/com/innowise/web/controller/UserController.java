@@ -24,7 +24,7 @@ public class UserController {
     private final UserFeignClient usersServiceClient;
 
     @GetMapping
-    public ResponseEntity<GetUsersResponse> getUsers(@SpringQueryMap(true) GetUsersFilterParams params) {
+    public ResponseEntity<GetUsersResponse> getUsers(GetUsersFilterParams params) {
         GetUsersResponse response = usersServiceClient.getUsersByFilterParams(params);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

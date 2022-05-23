@@ -1,13 +1,15 @@
 package com.innowise.core.dto.user.response;
 
-import com.innowise.core.entity.User;
-import com.innowise.core.entity.UserRole;
+import com.innowise.core.entity.role.Role;
+import com.innowise.core.entity.user.User;
+import com.innowise.core.entity.enums.Roles;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Date;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -28,7 +30,7 @@ public class GetUserByIdResponse {
     private String password;
     private String passportNum;
     private String issuedBy;
-    private Set<UserRole> userRoles;
+    private Set<Roles> userRoles;
 
     public GetUserByIdResponse(User user) {
         id = user.getId();
@@ -46,6 +48,8 @@ public class GetUserByIdResponse {
         password = user.getPassword();
         passportNum = user.getPassportNum();
         issuedBy = user.getIssuedBy();
-        userRoles = user.getUserRoles();
+        userRoles = user.getRoles().stream()
+                .map(Role::getRole)
+                .collect(Collectors.toSet());
     }
 }

@@ -15,10 +15,10 @@ public class GetUsersFilterParams {
 
     private String patronymic;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd", fallbackPatterns = {"EEE MMM dd HH:mm:ss zzz yyyy"})
     private Date beforeBornDate;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd", fallbackPatterns = {"EEE MMM dd HH:mm:ss zzz yyyy"})
     private Date afterBornDate;
 
     private String town;

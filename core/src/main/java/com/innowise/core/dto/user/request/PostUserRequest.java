@@ -1,7 +1,8 @@
 package com.innowise.core.dto.user.request;
 
-import com.innowise.core.entity.User;
-import com.innowise.core.entity.UserRole;
+import com.innowise.core.entity.role.Role;
+import com.innowise.core.entity.user.User;
+import com.innowise.core.entity.enums.Roles;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,7 @@ import lombok.Setter;
 import javax.validation.constraints.*;
 import java.sql.Date;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -65,7 +67,7 @@ public class PostUserRequest {
     private String issuedBy;
 
     @NotNull(message = "at least one role is required")
-    private Set<UserRole> userRoles;
+    private Set<Roles> userRoles;
 
     public User buildUser() {
         return User.builder().
@@ -83,7 +85,10 @@ public class PostUserRequest {
                 password(this.password).
                 passportNum(this.passportNum).
                 issuedBy(this.issuedBy).
-                userRoles(this.userRoles).
+                roles(this.userRoles.
+                        stream().
+                        map(userRole -> new Role(userRole.ordinal(), userRole)).
+                        collect(Collectors.toSet())).
                 build();
     }
 }
