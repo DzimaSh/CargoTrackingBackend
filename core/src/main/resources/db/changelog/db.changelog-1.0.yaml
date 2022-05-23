@@ -1,0 +1,207 @@
+databaseChangeLog:
+  - logicalFilePath: db/changelog/db.chagelog-1.0
+  - changeSet:
+      id: 1
+      author: shushkevich
+      comment: "Create users table"
+      changes:
+        createTable:
+          tableName: users
+          columns:
+            - column:
+                name: id
+                type: int
+                autoIncrement: true
+                constraints:
+                  primaryKey: true
+                  nullable: false
+            - column:
+                name: name
+                type: varchar(20)
+            - column:
+                name: surname
+                type: varchar(20)
+                constraints:
+                  nullable: false
+            - column:
+                name: patronymic
+                type: varchar(20)
+            - column:
+                name: client_id
+                type: int
+            - column:
+                name: born_date
+                type: date
+            - column:
+                name: email
+                type: varchar(50)
+                constraints:
+                  unique: true
+                  nullable: false
+            - column:
+                name: town
+                type: varchar(20)
+            - column:
+                name: street
+                type: varchar(20)
+            - column:
+                name: house
+                type: varchar(5)
+            - column:
+                name: flat
+                type: varchar(5)
+            - column:
+                name: login
+                type: varchar(15)
+                constraints:
+                  unique: true
+                  nullable: false
+            - column:
+                name: password
+                type: varchar(72)
+                constraints:
+                  nullable: false
+            - column:
+                name: passport_number
+                type: varchar(30)
+            - column:
+                name: passport_issued_by
+                type: varchar(50)
+  - changeSet:
+      id: 2
+      author: shushkevich
+      comment: "Create roles table"
+      changes:
+        createTable:
+          tableName: roles
+          columns:
+            - column:
+                name: id
+                type: int4
+                constraints:
+                  primaryKey: true
+                  nullable: false
+            - column:
+                name: role
+                type: varchar(30)
+  - changeSet:
+      id: 3
+      author: shushkevich
+      comment: "add all roles in roles table"
+      changes:
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: id
+                  value: 0
+              - column:
+                  name: role
+                  value: "SYS_ADMIN"
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: role
+                  value: "ADMIN"
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: id
+                  value: 2
+              - column:
+                  name: role
+                  value: "DISPATCHER"
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: id
+                  value: 3
+              - column:
+                  name: role
+                  value: "MANAGER"
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: id
+                  value: 4
+              - column:
+                  name: role
+                  value: "DRIVER"
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: id
+                  value: 5
+              - column:
+                  name: role
+                  value: "COMPANY_OWNER"
+  - changeSet:
+      id: 4
+      author: shushkevich
+      comment: "create bridge table between users and roles"
+      changes:
+        createTable:
+          tableName: users_roles
+          columns:
+            - column:
+                name: user_id
+                type: int4
+                constraints:
+                  foreignKeyName: fk_user_id
+                  references: users(id)
+                  nullable: false
+            - column:
+                name: role_id
+                type: int4
+                constraints:
+                  foreignKeyName: fk_role_id
+                  references: roles(id)
+                  nullable: false
+  - changeSet:
+      id: 5
+      author: shushkevich
+      comment: "make SYS_ADMIN unique"
+      changes:
+        - sql:
+            endDetemiter: \nGO
+            sql: CREATE UNIQUE INDEX idx_users_roles ON public.users_roles(role_id) WHERE role_id = 0;
+  - changeSet:
+      id: 6
+      author: shushkevich
+      comment: "create SYS_ADMIN user"
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: name
+                  value: "admin"
+              - column:
+                  name: surname
+                  value: "admin"
+              - column:
+                  name: email
+                  value: "admin@server.com"
+              - column:
+                  name: login
+                  value: "admin"
+              - column:
+                  name: password
+                  value: "admin"
+        - insert:
+            tableName: users_roles
+            columns:
+              - column:
+                  name: user_id
+                  value: 1
+              - column:
+                  name: role_id
+                  value: 0
