@@ -17,6 +17,7 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+
     @GetMapping
     private GetUsersResponse getUsers(GetUsersFilterParams params) {
         return userService.getAllUsersByFilterParams(params);
@@ -25,6 +26,11 @@ public class UserController {
     @GetMapping("/{id}")
     private GetUserByIdResponse getUser(@PathVariable Integer id) {
         return userService.getUserById(id);
+    }
+
+    @GetMapping(value = "/login/{login}")
+    private User getUserByLogin(@PathVariable String login) {
+        return userService.getUserByLogin(login);
     }
 
     @PostMapping

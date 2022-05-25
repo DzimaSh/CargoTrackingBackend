@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public GetUserByIdResponse getUserById(Integer id) {
-        User user = repository.findById(id).orElseThrow(() -> new UserNotFoundException("account not find with id " + id));
+        User user = repository.findById(id).orElseThrow(() -> new UserNotFoundException("user not find with id " + id));
         return new GetUserByIdResponse(user);
     }
 
@@ -47,6 +47,12 @@ public class UserServiceImpl implements UserService {
                 map(GetUserByIdResponse::new).
                 collect(Collectors.toList());
         return new GetUsersResponse(users, page.getTotalElements());
+    }
+
+    @Override
+    public User getUserByLogin(String login) {
+        return repository.findByLogin(login)
+                .orElseThrow(() -> new UserNotFoundException("User with login " + login + "not found"));
     }
 
     @Override

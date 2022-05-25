@@ -5,6 +5,7 @@ import com.innowise.core.dto.user.request.PostUserRequest;
 import com.innowise.core.dto.user.request.PutUserRequest;
 import com.innowise.core.dto.user.response.GetUsersResponse;
 import com.innowise.core.dto.user.response.GetUserByIdResponse;
+import com.innowise.core.entity.user.User;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
@@ -24,6 +25,9 @@ public interface UserFeignClient {
 
     @GetMapping
     GetUsersResponse getUsersByFilterParams(@SpringQueryMap(true) GetUsersFilterParams params);
+
+    @GetMapping(value = "/login/{login}")
+    User getUserByLogin(@PathVariable String login);
 
     @PostMapping
     String postUser(@RequestBody PostUserRequest request);
