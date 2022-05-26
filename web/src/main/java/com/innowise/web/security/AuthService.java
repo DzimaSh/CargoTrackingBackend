@@ -2,9 +2,10 @@ package com.innowise.web.security;
 
 import com.innowise.core.entity.user.User;
 import com.innowise.web.dto.request.AuthRequest;
+import com.innowise.web.dto.request.RefreshJwtRequest;
 import com.innowise.web.dto.response.JwtResponse;
 import com.innowise.web.feign.UserFeignClient;
-import com.innowise.web.security.util.JwtUtil;
+import com.innowise.web.security.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,6 +28,14 @@ public class AuthService {
 
         String accessToken = tokenBuilder.buildAccessToken(user);
         String refreshToken = tokenBuilder.buildRefreshToken(user);
+
+        return new JwtResponse(accessToken, refreshToken);
+    }
+
+    public JwtResponse refresh(RefreshJwtRequest jwtRequest) {
+
+        String accessToken = "";
+        String refreshToken = "";
 
         return new JwtResponse(accessToken, refreshToken);
     }

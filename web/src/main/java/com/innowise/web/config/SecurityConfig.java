@@ -1,7 +1,7 @@
 package com.innowise.web.config;
 
-import com.innowise.web.security.CustomAuthorizationFilter;
-import com.innowise.web.security.util.JwtUtil;
+import com.innowise.web.security.jwt.JwtAuthorizationFilter;
+import com.innowise.web.security.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +24,8 @@ import static com.innowise.core.entity.enums.Roles.DISPATCHER;
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final String USERS_API_ENDPOINTS = "api/users";
+    private final String USERS_API_ENDPOINTS = "/api/users";
+    private final String[] AUTH_ENDPOINTS = {"/api/sign-in", "/api/refresh/", "/api/logout"};
 
     private final UserDetailsService jwtUserDetailsService;
     private final PasswordEncoder bCryptPasswordEncoder;
@@ -37,15 +38,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/api/sign-in").permitAll()
-                .and()
-                .antMatcher(USERS_API_ENDPOINTS)
-                    .authorizeRequests()
-                    .antMatchers(HttpMethod.GET).hasAnyAuthority(ADMIN.name(), DISPATCHER.name())
-                    .antMatchers(USERS_API_ENDPOINTS + "/**").hasRole(ADMIN.name())
+                .antMatchers("/api/about").permitAll()
+                .antMatchers(HttpMethod.POST, AUTH_ENDPOINTS).permitAll()
+                .antMatchers(HttpMethod.GET, USERS_API_ENDPOINTS).hasAnyAuthority(ADMIN.name(), DISPATCHER.name())
+                .antMatchers(USERS_API_ENDPOINTS + "/**").hasAuthority(ADMIN.name())
                 .anyRequest().authenticated();
 
-        http.addFilterBefore(new CustomAuthorizationFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new JwtAuthorizationFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
     }
 
     @Override

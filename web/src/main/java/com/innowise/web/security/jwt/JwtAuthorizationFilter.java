@@ -1,7 +1,7 @@
-package com.innowise.web.security;
+package com.innowise.web.security.jwt;
 
-import com.auth0.jwt.interfaces.DecodedJWT;
-import com.innowise.web.security.util.JwtUtil;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -16,11 +16,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import static org.springframework.cloud.openfeign.security.OAuth2FeignRequestInterceptor.AUTHORIZATION;
 
 @RequiredArgsConstructor
-public class CustomAuthorizationFilter extends OncePerRequestFilter {
+public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private final String SIGN_IN_ENDPOINT = "/api/sign-in";
     private final String REFRESH_ENDPOINT = "/api/refresh";
@@ -36,14 +37,18 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
         } else {
             final String authorizationHeader = request.getHeader(AUTHORIZATION);
             if (authorizationHeader != null && authorizationHeader.startsWith(BEARER_PREFIX)) {
+
                 String token = authorizationHeader.substring(BEARER_PREFIX.length());
-                DecodedJWT decodedJWT = jwtUtil.decodeJWT(token);
-                String login = decodedJWT.getSubject();
-                String[] roles = decodedJWT.getClaim("roles").asArray(String.class);
+                Jws<Claims> decodedJWT = jwtUtil.decodeAndVerifyJWT(token);
+
+                String login = decodedJWT.getBody().getSubject();
+                List<String> roles = decodedJWT.getBody().get("roles", ArrayList.class);
+
                 Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-                Arrays.stream(roles).forEach(role -> {
+                roles.forEach(role -> {
                     authorities.add(new SimpleGrantedAuthority(role));
                 });
+
                 UsernamePasswordAuthenticationToken authenticationToken =
                         new UsernamePasswordAuthenticationToken(login, null, authorities);
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
