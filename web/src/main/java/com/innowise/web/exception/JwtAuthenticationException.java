@@ -1,6 +1,8 @@
 package com.innowise.web.exception;
 
-public class JwtAuthenticationException extends RuntimeException {
+import io.jsonwebtoken.JwtException;
+
+public class JwtAuthenticationException extends JwtException {
     public JwtAuthenticationException(String message) {
         super(message);
     }

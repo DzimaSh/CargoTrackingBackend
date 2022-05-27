@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserController {
     private final UserFeignClient usersServiceClient;
+    private final PasswordEncoder passwordEncoder;
 
     @GetMapping
     public ResponseEntity<GetUsersResponse> getUsers(GetUsersFilterParams params) {
@@ -38,6 +40,7 @@ public class UserController {
     public ResponseEntity<String> insertUser(@RequestBody @Valid PostUserRequest userRequest, BindingResult result) {
         if (result.hasErrors())
             throw new ValidationException(result);
+        userRequest.setPassword(passwordEncoder.encode(userRequest.getPassword()));
         return new ResponseEntity<>(usersServiceClient.postUser(userRequest), HttpStatus.CREATED);
     }
 
@@ -48,11 +51,13 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateUser(@RequestBody @Valid PutUserRequest request, BindingResult result,
+    public ResponseEntity<Void> updateUser(@RequestBody @Valid PutUserRequest userRequest, BindingResult result,
                                            @PathVariable Integer id) {
         if (result.hasErrors())
             throw new ValidationException(result);
-        usersServiceClient.updateUser(request, id);
+
+        userRequest.setPassword(passwordEncoder.encode(userRequest.getPassword()));
+        usersServiceClient.updateUser(userRequest, id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

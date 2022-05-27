@@ -7,6 +7,7 @@ import com.innowise.web.security.jwt.JwtUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,7 @@ public class JwtUserDetailsService implements UserDetailsService {
             return new JwtUser(user.getId(),
                     user.getLogin(),
                     user.getPassword(),
+                    user.getClientId(),
                     true,
                     convertToSpringAuthorities(user.getRoles()));
         }

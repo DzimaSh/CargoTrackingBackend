@@ -16,8 +16,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import static com.innowise.core.entity.enums.Roles.ADMIN;
-import static com.innowise.core.entity.enums.Roles.DISPATCHER;
+import static com.innowise.core.entity.enums.Roles.*;
 
 @Configuration
 @EnableWebSecurity
@@ -25,7 +24,8 @@ import static com.innowise.core.entity.enums.Roles.DISPATCHER;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final String USERS_API_ENDPOINTS = "/api/users";
-    private final String[] AUTH_ENDPOINTS = {"/api/sign-in", "/api/refresh/", "/api/logout"};
+    private final String[] AUTH_ENDPOINTS = {"/api/sign-in", "/api/refresh"};
+    private final String LOGOUT_ENDPOINT = "/api/logout";
 
     private final UserDetailsService jwtUserDetailsService;
     private final PasswordEncoder bCryptPasswordEncoder;
@@ -40,11 +40,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/api/about").permitAll()
                 .antMatchers(HttpMethod.POST, AUTH_ENDPOINTS).permitAll()
+                .antMatchers(HttpMethod.POST, LOGOUT_ENDPOINT).authenticated()
                 .antMatchers(HttpMethod.GET, USERS_API_ENDPOINTS).hasAnyAuthority(ADMIN.name(), DISPATCHER.name())
-                .antMatchers(USERS_API_ENDPOINTS + "/**").hasAuthority(ADMIN.name())
+                .antMatchers(USERS_API_ENDPOINTS + "/**").hasAnyAuthority(ADMIN.name(), SYS_ADMIN.name())
                 .anyRequest().authenticated();
 
-        http.addFilterBefore(new JwtAuthorizationFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new JwtAuthorizationFilter(jwtUtil, jwtUserDetailsService), UsernamePasswordAuthenticationFilter.class);
     }
 
     @Override

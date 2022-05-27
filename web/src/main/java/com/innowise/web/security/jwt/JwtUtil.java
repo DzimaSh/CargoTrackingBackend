@@ -21,7 +21,7 @@ public class JwtUtil {
                 .setSubject(user.getLogin())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + jwtParams.getAccessTokenLifeTime()))
-                .claim("clientId", Integer.toString(user.getClientId()))
+                .claim("clientId", user.getClientId() != null ? Integer.toString(user.getClientId()) : null)
                 .claim("roles", user.getRoles().stream()
                         .map(role -> role.getRole().name())
                         .collect(Collectors.toList()))
@@ -31,16 +31,20 @@ public class JwtUtil {
 
     public String buildRefreshToken(User user) {
         return Jwts.builder()
-                .setSubject(Integer.toString(user.getId()))
+                .setSubject(user.getLogin())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + jwtParams.getRefreshTokenLifeTime()))
+                .claim("userId", Integer.toString(user.getId()))
                 .signWith(SignatureAlgorithm.HS256, jwtParams.getRefreshTokenSecret().getBytes())
                 .compact();
     }
 
-    public Jws<Claims> decodeAndVerifyJWT(String token) {
+    public Jws<Claims> decodeAndVerifyJWT(String token, boolean isAccessToken) {
+        byte[] secret = isAccessToken ?
+                jwtParams.getAccessTokenSecret().getBytes() :
+                jwtParams.getRefreshTokenSecret().getBytes();
         Jws<Claims> claims = Jwts.parser()
-                .setSigningKey(jwtParams.getAccessTokenSecret().getBytes())
+                .setSigningKey(secret)
                 .parseClaimsJws(token);
         if (verifyJwt(claims))
             return claims;
