@@ -1,13 +1,17 @@
 package com.innowise.web.security.jwt;
 
+import com.innowise.core.entity.role.Role;
 import com.innowise.core.entity.user.User;
 import com.innowise.web.exception.JwtAuthenticationException;
 import com.innowise.web.project.JwtParams;
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.impl.DefaultClaims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -17,14 +21,16 @@ public class JwtUtil {
     private final JwtParams jwtParams;
 
     public String buildAccessToken(User user) {
+        Claims claims = new DefaultClaims();
+        claims.putIfAbsent("roles", getUserRolesNames(user.getRoles()));
+        if (user.getClientId() != null) {
+            claims.putIfAbsent("clientId", user.getClientId());
+        }
         return Jwts.builder()
+                .setClaims(claims)
                 .setSubject(user.getLogin())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + jwtParams.getAccessTokenLifeTime()))
-                .claim("clientId", user.getClientId() != null ? Integer.toString(user.getClientId()) : null)
-                .claim("roles", user.getRoles().stream()
-                        .map(role -> role.getRole().name())
-                        .collect(Collectors.toList()))
                 .signWith(SignatureAlgorithm.HS256, jwtParams.getAccessTokenSecret().getBytes())
                 .compact();
     }
@@ -57,5 +63,11 @@ public class JwtUtil {
         } catch (JwtException | IllegalArgumentException e) {
             throw new JwtAuthenticationException("JWT token is expired or invalid");
         }
+    }
+
+    private List<String> getUserRolesNames(Set<Role> roles) {
+        return roles.stream()
+                .map(role -> role.getRole().name())
+                .collect(Collectors.toList());
     }
 }

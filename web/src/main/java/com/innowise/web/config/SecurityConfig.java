@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -23,13 +24,18 @@ import static com.innowise.core.entity.enums.Roles.*;
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final String USERS_API_ENDPOINTS = "/api/users";
+    private final String GET_USERS_API_ENDPOINT = "/api/users";
+    private final String USER_API_ENDPOINTS = "api/users/**";
     private final String[] AUTH_ENDPOINTS = {"/api/sign-in", "/api/refresh"};
     private final String LOGOUT_ENDPOINT = "/api/logout";
 
     private final UserDetailsService jwtUserDetailsService;
-    private final PasswordEncoder bCryptPasswordEncoder;
     private final JwtUtil jwtUtil;
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(12);
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -41,8 +47,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/about").permitAll()
                 .antMatchers(HttpMethod.POST, AUTH_ENDPOINTS).permitAll()
                 .antMatchers(HttpMethod.POST, LOGOUT_ENDPOINT).authenticated()
-                .antMatchers(HttpMethod.GET, USERS_API_ENDPOINTS).hasAnyAuthority(ADMIN.name(), DISPATCHER.name())
-                .antMatchers(USERS_API_ENDPOINTS + "/**").hasAnyAuthority(ADMIN.name(), SYS_ADMIN.name())
+                .antMatchers(HttpMethod.GET, GET_USERS_API_ENDPOINT).hasAnyAuthority(ADMIN.name(), DISPATCHER.name())
+                .antMatchers(USER_API_ENDPOINTS).hasAnyAuthority(ADMIN.name(), SYS_ADMIN.name())
                 .anyRequest().authenticated();
 
         http.addFilterBefore(new JwtAuthorizationFilter(jwtUtil, jwtUserDetailsService), UsernamePasswordAuthenticationFilter.class);
@@ -50,7 +56,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(jwtUserDetailsService).passwordEncoder(bCryptPasswordEncoder);
+        auth.userDetailsService(jwtUserDetailsService).passwordEncoder(passwordEncoder());
     }
 
     @Bean

@@ -25,41 +25,34 @@ import static org.springframework.cloud.openfeign.security.OAuth2FeignRequestInt
 @RequiredArgsConstructor
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
-    private final String SIGN_IN_ENDPOINT = "/api/sign-in";
-    private final String REFRESH_ENDPOINT = "/api/refresh";
-    private final String BEARER_PREFIX = "Bearer ";
-
     private final JwtUtil jwtUtil;
     private final UserDetailsService jwtUserDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        final String path = request.getServletPath();
-        if (path.equals(SIGN_IN_ENDPOINT) || path.equals(REFRESH_ENDPOINT)) {
-            filterChain.doFilter(request, response);
-        } else {
-            final String authorizationHeader = request.getHeader(AUTHORIZATION);
-            if (authorizationHeader != null && authorizationHeader.startsWith(BEARER_PREFIX)) {
+        final String authorizationHeader = request.getHeader(AUTHORIZATION);
+        final String BEARER_PREFIX = "Bearer ";
+        if (authorizationHeader != null && authorizationHeader.startsWith(BEARER_PREFIX)) {
 
-                String token = authorizationHeader.substring(BEARER_PREFIX.length());
-                Jws<Claims> decodedJWT = jwtUtil.decodeAndVerifyJWT(token, true);
+            String token = authorizationHeader.substring(BEARER_PREFIX.length());
+            Jws<Claims> decodedJWT = jwtUtil.decodeAndVerifyJWT(token, true);
 
-                String login = decodedJWT.getBody().getSubject();
-                List<String> roles = decodedJWT.getBody().get("roles", ArrayList.class);
+            String login = decodedJWT.getBody().getSubject();
+            List<String> roles = decodedJWT.getBody().get("roles", ArrayList.class);
 
-                Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-                roles.forEach(role -> {
-                    authorities.add(new SimpleGrantedAuthority(role));
-                });
+            Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
+            roles.forEach(role -> {
+                authorities.add(new SimpleGrantedAuthority(role));
+            });
 
-                JwtUser user = (JwtUser) jwtUserDetailsService.loadUserByUsername(login);
-                if (!AuthService.getAuthorizedUserIds().contains(user.getId()))
-                    throw new JwtAuthenticationException("user is logged out");
-                UsernamePasswordAuthenticationToken authenticationToken =
-                        new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities());
-                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+            JwtUser user = (JwtUser) jwtUserDetailsService.loadUserByUsername(login);
+            if (!AuthService.getAuthorizedUserIds().contains(user.getId())) {
+                throw new JwtAuthenticationException("user is logged out");
             }
-            filterChain.doFilter(request, response);
+            UsernamePasswordAuthenticationToken authenticationToken =
+                    new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         }
+        filterChain.doFilter(request, response);
     }
 }
