@@ -1,5 +1,9 @@
 package com.innowise.web.security;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import com.innowise.core.dto.user.request.GetUserByLoginRequest;
 import com.innowise.core.entity.user.User;
 import com.innowise.web.dto.request.AuthRequest;
 import com.innowise.web.dto.request.LogoutRequest;
@@ -12,10 +16,14 @@ import com.innowise.web.security.jwt.JwtUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpRequest;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
+import java.io.Writer;
+import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -29,8 +37,8 @@ public class AuthService {
     private static final Set<Integer> authorizedUserIds = new HashSet<>();
 
     public JwtResponse authenticate(AuthRequest authRequest) {
-        String login = authRequest.getLogin();
-        User user = feignClient.getUserByLogin(login);
+        User user = feignClient.getUserByLogin(
+                new GetUserByLoginRequest(authRequest.getLogin()));
         authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(user.getLogin(), authRequest.getPassword())
         );
@@ -44,7 +52,7 @@ public class AuthService {
 
     public JwtResponse refresh(RefreshJwtRequest jwtRequest) {
         Jws<Claims> claims = tokenBuilder.decodeAndVerifyJWT(jwtRequest.getToken(), false);
-        User user = feignClient.getUserByLogin(claims.getBody().getSubject());
+        User user = feignClient.getUserByLogin(new GetUserByLoginRequest(claims.getBody().getSubject()));
 
         String accessToken, refreshToken;
         if (user.getId() == jwtRequest.getUserId()) {

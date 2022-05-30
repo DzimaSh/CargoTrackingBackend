@@ -1,6 +1,7 @@
 package com.innowise.web.feign;
 
 import com.innowise.core.controller.util.GetUsersFilterParams;
+import com.innowise.core.dto.user.request.GetUserByLoginRequest;
 import com.innowise.core.dto.user.request.PostUserRequest;
 import com.innowise.core.dto.user.request.PutUserRequest;
 import com.innowise.core.dto.user.response.GetUsersResponse;
@@ -26,8 +27,8 @@ public interface UserFeignClient {
     @GetMapping
     GetUsersResponse getUsersByFilterParams(@SpringQueryMap(true) GetUsersFilterParams params);
 
-    @GetMapping(value = "/login/{login}")
-    User getUserByLogin(@PathVariable String login);
+    @GetMapping(value = "/login")
+    User getUserByLogin(@SpringQueryMap(true) GetUserByLoginRequest request);
 
     @PostMapping
     String postUser(@RequestBody PostUserRequest request);

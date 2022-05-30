@@ -1,6 +1,7 @@
 package com.innowise.core.controller;
 
 import com.innowise.core.controller.util.GetUsersFilterParams;
+import com.innowise.core.dto.user.request.GetUserByLoginRequest;
 import com.innowise.core.dto.user.response.GetUsersResponse;
 import com.innowise.core.dto.user.request.PostUserRequest;
 import com.innowise.core.dto.user.response.GetUserByIdResponse;
@@ -28,9 +29,9 @@ public class UserController {
         return userService.getUserById(id);
     }
 
-    @GetMapping(value = "/login/{login}")
-    private User getUserByLogin(@PathVariable String login) {
-        return userService.getUserByLogin(login);
+    @GetMapping(value = "/login")
+    private User getUserByLogin(GetUserByLoginRequest request) {
+        return userService.getUserByLogin(request.getLogin());
     }
 
     @PostMapping

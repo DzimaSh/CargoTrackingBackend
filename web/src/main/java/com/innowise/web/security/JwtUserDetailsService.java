@@ -1,5 +1,6 @@
 package com.innowise.web.security;
 
+import com.innowise.core.dto.user.request.GetUserByLoginRequest;
 import com.innowise.core.entity.role.Role;
 import com.innowise.core.entity.user.User;
 import com.innowise.web.feign.UserFeignClient;
@@ -7,7 +8,6 @@ import com.innowise.web.security.jwt.JwtUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -25,7 +25,7 @@ public class JwtUserDetailsService implements UserDetailsService {
 
     @Override
     public JwtUser loadUserByUsername(String login) throws UsernameNotFoundException {
-        User user = userFeignClient.getUserByLogin(login);
+        User user = userFeignClient.getUserByLogin(new GetUserByLoginRequest(login));
         if (user == null) {
             throw new UsernameNotFoundException("User with login \"" + login + "\" does not exist");
         } else  {
