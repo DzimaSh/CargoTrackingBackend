@@ -51,7 +51,7 @@ public class AuthService {
             accessToken = tokenBuilder.buildAccessToken(user);
             refreshToken = tokenBuilder.buildRefreshToken(user);
         } else {
-            throw new JwtAuthenticationException("ser id in request and real user id aren't same");
+            throw new JwtAuthenticationException("User id in request and real user id aren't same");
         }
 
         return new JwtResponse(accessToken, refreshToken);

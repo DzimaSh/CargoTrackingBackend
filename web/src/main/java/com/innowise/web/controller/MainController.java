@@ -31,7 +31,11 @@ public class MainController {
     }
 
     @PostMapping("/sign-in")
-    public ResponseEntity<JwtResponse> signIn(@RequestBody AuthRequest authRequest) {
+    public ResponseEntity<JwtResponse> signIn(@RequestBody @Valid AuthRequest authRequest,
+                                              BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new ValidationException(bindingResult);
+        }
         JwtResponse response = authService.authenticate(authRequest);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
