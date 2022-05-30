@@ -1,5 +1,7 @@
 package com.innowise.web.exception;
 
+import com.innowise.core.dto.error.ErrorResponse;
+import com.innowise.core.exceprtion.CoreGlobalException;
 import io.jsonwebtoken.JwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,25 +10,45 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @RestControllerAdvice
 public class ControllerAdvisor extends ResponseEntityExceptionHandler {
     @ExceptionHandler(ValidationException.class)
-    public ResponseEntity<Map<String, String>> handleValidationExceptions(
-            ValidationException ex) {
-        Map<String, String> errors = new HashMap<>();
+    public ResponseEntity<ErrorResponse> handleValidationExceptions(ValidationException ex) {
+        List<String> errors = new ArrayList<>();
         ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
+            StringBuilder builder = new StringBuilder();
+            builder
+                    .append(((FieldError) error).getField())
+                    .append(" ")
+                    .append(error.getDefaultMessage());
+            errors.add(builder.toString());
         });
-        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+
+        ErrorResponse response = ErrorResponse.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .errors(errors)
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(JwtException.class)
-    public ResponseEntity<String> handleJwtException(JwtException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.FORBIDDEN);
+    public ResponseEntity<ErrorResponse> handleJwtException(JwtException ex) {
+        ErrorResponse response = ErrorResponse.builder()
+                .status(HttpStatus.FORBIDDEN.value())
+                .errors(List.of(ex.getMessage()))
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
     }
+
+    @ExceptionHandler(CoreGlobalException.class)
+    public ResponseEntity<ErrorResponse> handleCoreException(CoreGlobalException ex) {
+        ErrorResponse response = ErrorResponse.builder()
+                .status(ex.getStatus())
+                .errors(List.of(ex.getMessage()))
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.resolve(ex.getStatus()));
+    }
+
 }
