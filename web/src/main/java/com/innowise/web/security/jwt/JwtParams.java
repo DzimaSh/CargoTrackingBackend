@@ -1,4 +1,4 @@
-package com.innowise.web.project;
+package com.innowise.web.security.jwt;
 
 import lombok.Getter;
 import lombok.Setter;

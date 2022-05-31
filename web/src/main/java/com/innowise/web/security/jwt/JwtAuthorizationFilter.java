@@ -6,7 +6,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -17,7 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import static org.springframework.cloud.openfeign.security.OAuth2FeignRequestInterceptor.AUTHORIZATION;
@@ -38,13 +36,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             Jws<Claims> decodedJWT = jwtUtil.decodeAndVerifyJWT(token, true);
 
             String login = decodedJWT.getBody().getSubject();
-            List<String> roles = decodedJWT.getBody().get("roles", ArrayList.class);
-
-            Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-            roles.forEach(role -> {
-                authorities.add(new SimpleGrantedAuthority(role));
-            });
-
             JwtUser user = (JwtUser) jwtUserDetailsService.loadUserByUsername(login);
             if (!AuthService.getAuthorizedUserIds().contains(user.getId())) {
                 throw new JwtAuthenticationException("user is logged out");

@@ -29,7 +29,7 @@ public class UserController {
         return userService.getUserById(id);
     }
 
-    @GetMapping(value = "/login")
+    @PutMapping
     private User getUserByLogin(GetUserByLoginRequest request) {
         return userService.getUserByLogin(request.getLogin());
     }

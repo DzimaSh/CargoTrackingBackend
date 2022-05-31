@@ -1,16 +1,13 @@
 package com.innowise.web;
 
-import com.innowise.web.project.JwtParams;
-import com.innowise.web.project.ProjectParams;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @SpringBootApplication
 @EnableFeignClients
-@ConfigurationPropertiesScan("com.innowise.web.project")
+@ConfigurationPropertiesScan("com.innowise.web")
 public class WebApplication {
 
     public static void main(String[] args) {

@@ -25,7 +25,7 @@ import static com.innowise.core.entity.enums.Roles.*;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final String GET_USERS_API_ENDPOINT = "/api/users";
-    private final String USER_API_ENDPOINTS = "api/users/**";
+    private final String USER_API_ENDPOINTS = "/api/users/**";
     private final String[] AUTH_ENDPOINTS = {"/api/sign-in", "/api/refresh"};
     private final String LOGOUT_ENDPOINT = "/api/logout";
 

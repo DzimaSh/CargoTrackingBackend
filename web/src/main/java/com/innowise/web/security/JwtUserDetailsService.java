@@ -34,18 +34,17 @@ public class JwtUserDetailsService implements UserDetailsService {
                     user.getPassword(),
                     user.getClientId(),
                     true,
-                    convertToSpringAuthorities(user.getRoles()));
+                    convertUserRolesToSpringAuthorities(user.getRoles()));
         }
     }
 
-    private Collection<? extends GrantedAuthority> convertToSpringAuthorities(Set<Role> roles) {
-        if (roles != null && roles.size() > 0){
+    private Collection<GrantedAuthority> convertUserRolesToSpringAuthorities(Set<Role> roles) {
+        if (roles != null && roles.size() > 0) {
             return roles.stream()
                     .map(role -> role.getRole().name())
                     .map(SimpleGrantedAuthority::new)
                     .collect(Collectors.toSet());
-        } else {
-            return new HashSet<>();
         }
+        return new HashSet<>();
     }
 }

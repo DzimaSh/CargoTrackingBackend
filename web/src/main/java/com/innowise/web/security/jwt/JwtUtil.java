@@ -3,7 +3,6 @@ package com.innowise.web.security.jwt;
 import com.innowise.core.entity.role.Role;
 import com.innowise.core.entity.user.User;
 import com.innowise.web.exception.JwtAuthenticationException;
-import com.innowise.web.project.JwtParams;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.impl.DefaultClaims;
 import lombok.RequiredArgsConstructor;
