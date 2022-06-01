@@ -2,10 +2,12 @@ package com.innowise.web.config;
 
 import com.innowise.web.security.jwt.JwtAuthorizationFilter;
 import com.innowise.web.security.jwt.JwtUtil;
+import com.innowise.web.util.ExceptionHandlingUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -31,6 +33,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsService jwtUserDetailsService;
     private final JwtUtil jwtUtil;
+    private final ExceptionHandlingUtil exceptionHandlingUtil;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -48,10 +51,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, AUTH_ENDPOINTS).permitAll()
                 .antMatchers(HttpMethod.POST, LOGOUT_ENDPOINT).authenticated()
                 .antMatchers(HttpMethod.GET, GET_USERS_API_ENDPOINT).hasAnyAuthority(ADMIN.name(), DISPATCHER.name())
-                .antMatchers(USER_API_ENDPOINTS).hasAnyAuthority(ADMIN.name(), SYS_ADMIN.name())
+                .antMatchers(HttpMethod.POST, USER_API_ENDPOINTS).hasAnyAuthority(ADMIN.name(), SYS_ADMIN.name())
+                .antMatchers(USER_API_ENDPOINTS).hasAuthority(ADMIN.name())
                 .anyRequest().authenticated();
 
-        http.addFilterBefore(new JwtAuthorizationFilter(jwtUtil, jwtUserDetailsService), UsernamePasswordAuthenticationFilter.class);
+        http.exceptionHandling()
+                .authenticationEntryPoint((request, response, authException) -> {
+                    exceptionHandlingUtil.sendExceptionToClient(response, authException, HttpStatus.UNAUTHORIZED);
+                })
+                .accessDeniedHandler((request, response, accessDeniedException) -> {
+                    exceptionHandlingUtil.sendExceptionToClient(response, accessDeniedException, HttpStatus.FORBIDDEN);
+                });
+        http.addFilterBefore(new JwtAuthorizationFilter(jwtUtil, jwtUserDetailsService, exceptionHandlingUtil), UsernamePasswordAuthenticationFilter.class);
     }
 
     @Override

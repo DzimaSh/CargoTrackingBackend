@@ -2,7 +2,7 @@ package com.innowise.web.feign;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.innowise.core.exceprtion.CoreGlobalException;
+import com.innowise.web.exception.CoreGlobalException;
 import feign.Response;
 import feign.codec.ErrorDecoder;
 import org.apache.commons.io.IOUtils;
@@ -25,6 +25,7 @@ public class CustomFeignErrorDecoder implements ErrorDecoder {
                     CoreGlobalException.class);
             exceptionMessage.setStatus(response.status());
         } catch (IOException e) {
+            //TODO:
             e.printStackTrace();
         }
         return exceptionMessage;

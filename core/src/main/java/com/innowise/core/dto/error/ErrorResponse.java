@@ -1,6 +1,7 @@
 package com.innowise.core.dto.error;
 
 import lombok.*;
+import org.springframework.http.HttpStatus;
 
 import java.util.Date;
 import java.util.List;

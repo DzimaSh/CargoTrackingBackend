@@ -1,8 +1,9 @@
 package com.innowise.web.exception;
 
 import com.innowise.core.dto.error.ErrorResponse;
-import com.innowise.core.exceprtion.CoreGlobalException;
+import com.innowise.web.util.ExceptionHandlingUtil;
 import io.jsonwebtoken.JwtException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -13,7 +14,11 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import java.util.*;
 
 @RestControllerAdvice
+@RequiredArgsConstructor
 public class ControllerAdvisor extends ResponseEntityExceptionHandler {
+
+    private final ExceptionHandlingUtil exceptionHandlingUtil;
+
     @ExceptionHandler(ValidationException.class)
     public ResponseEntity<ErrorResponse> handleValidationExceptions(ValidationException ex) {
         List<String> errors = new ArrayList<>();
@@ -25,30 +30,17 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
                     .append(error.getDefaultMessage());
             errors.add(builder.toString());
         });
-
-        ErrorResponse response = ErrorResponse.builder()
-                .status(HttpStatus.BAD_REQUEST.value())
-                .errors(errors)
-                .build();
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        return exceptionHandlingUtil.buildResponse(HttpStatus.BAD_REQUEST, errors);
     }
 
     @ExceptionHandler(JwtException.class)
     public ResponseEntity<ErrorResponse> handleJwtException(JwtException ex) {
-        ErrorResponse response = ErrorResponse.builder()
-                .status(HttpStatus.FORBIDDEN.value())
-                .errors(List.of(ex.getMessage()))
-                .build();
-        return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
+        return exceptionHandlingUtil.buildResponse(HttpStatus.FORBIDDEN, List.of(ex.getMessage()));
     }
 
     @ExceptionHandler(CoreGlobalException.class)
     public ResponseEntity<ErrorResponse> handleCoreException(CoreGlobalException ex) {
-        ErrorResponse response = ErrorResponse.builder()
-                .status(ex.getStatus())
-                .errors(List.of(ex.getMessage()))
-                .build();
-        return new ResponseEntity<>(response, HttpStatus.resolve(ex.getStatus()));
+        return exceptionHandlingUtil.buildResponse(HttpStatus.resolve(ex.getStatus()), ex.getErrors());
     }
 
 }
