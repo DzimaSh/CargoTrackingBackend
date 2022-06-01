@@ -43,15 +43,15 @@ public class JwtUtil {
                 .compact();
     }
 
-    public String getLoginFromJwt(String token, boolean isAccessToken) {
-        return decodeTokenBody(token, isAccessToken).getSubject();
+    public String decodeLoginFromJwt(String token, boolean isAccessToken) {
+        return resolveTokenBody(token, isAccessToken).getSubject();
     }
 
-    public <T> T getClaimFromJwt(String token, String claimName, Class<T> type, boolean isAccessToken) {
-        return decodeTokenBody(token, isAccessToken).get(claimName, type);
+    public <T> T decodeClaimFromJwt(String token, String claimName, Class<T> type, boolean isAccessToken) {
+        return resolveTokenBody(token, isAccessToken).get(claimName, type);
     }
 
-    private DefaultClaims decodeTokenBody(String token, boolean isAccessToken) {
+    private DefaultClaims resolveTokenBody(String token, boolean isAccessToken) {
         byte[] secret = isAccessToken ?
                 jwtParams.getAccessTokenSecret().getBytes() :
                 jwtParams.getRefreshTokenSecret().getBytes();

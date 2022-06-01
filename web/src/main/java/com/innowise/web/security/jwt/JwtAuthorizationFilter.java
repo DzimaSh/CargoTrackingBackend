@@ -30,7 +30,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
             String token = authorizationHeader.substring(BEARER_PREFIX.length());
 
-            String login = jwtUtil.getLoginFromJwt(token, true);
+            String login = jwtUtil.decodeLoginFromJwt(token, true);
             JwtUser user = (JwtUser) jwtUserDetailsService.loadUserByUsername(login);
             if (!AuthService.getAuthorizedUserIds().contains(user.getId())) {
                 throw new JwtAuthenticationException("user is logged out");

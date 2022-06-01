@@ -42,7 +42,7 @@ public class AuthService {
     }
 
     public JwtResponse refresh(RefreshJwtRequest jwtRequest) {
-        String userLogin = jwtUtil.getLoginFromJwt(jwtRequest.getToken(), false);
+        String userLogin = jwtUtil.decodeLoginFromJwt(jwtRequest.getToken(), false);
         User user = feignClient.getUserByLogin(new GetUserByLoginRequest(userLogin));
 
         String accessToken, refreshToken;
