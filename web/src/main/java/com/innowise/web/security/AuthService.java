@@ -1,8 +1,5 @@
 package com.innowise.web.security;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import com.innowise.core.dto.user.request.GetUserByLoginRequest;
 import com.innowise.core.entity.user.User;
 import com.innowise.web.dto.request.AuthRequest;
@@ -13,17 +10,11 @@ import com.innowise.web.exception.JwtAuthenticationException;
 import com.innowise.web.feign.UserFeignClient;
 import com.innowise.web.security.jwt.JwtUser;
 import com.innowise.web.security.jwt.JwtUtil;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpRequest;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
-import java.io.Writer;
-import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -33,7 +24,7 @@ public class AuthService {
 
     private final UserFeignClient feignClient;
     private final AuthenticationManager authManager;
-    private final JwtUtil tokenBuilder;
+    private final JwtUtil jwtUtil;
     private static final Set<Integer> authorizedUserIds = new HashSet<>();
 
     public JwtResponse authenticate(AuthRequest authRequest) {
@@ -44,20 +35,20 @@ public class AuthService {
         );
 
         authorizedUserIds.add(user.getId());
-        String accessToken = tokenBuilder.buildAccessToken(user);
-        String refreshToken = tokenBuilder.buildRefreshToken(user);
+        String accessToken = jwtUtil.buildAccessToken(user);
+        String refreshToken = jwtUtil.buildRefreshToken(user);
 
         return new JwtResponse(accessToken, refreshToken);
     }
 
     public JwtResponse refresh(RefreshJwtRequest jwtRequest) {
-        Jws<Claims> claims = tokenBuilder.decodeAndVerifyJWT(jwtRequest.getToken(), false);
-        User user = feignClient.getUserByLogin(new GetUserByLoginRequest(claims.getBody().getSubject()));
+        String userLogin = jwtUtil.getLoginFromJwt(jwtRequest.getToken(), false);
+        User user = feignClient.getUserByLogin(new GetUserByLoginRequest(userLogin));
 
         String accessToken, refreshToken;
         if (user.getId() == jwtRequest.getUserId()) {
-            accessToken = tokenBuilder.buildAccessToken(user);
-            refreshToken = tokenBuilder.buildRefreshToken(user);
+            accessToken = jwtUtil.buildAccessToken(user);
+            refreshToken = jwtUtil.buildRefreshToken(user);
         } else {
             throw new JwtAuthenticationException("User id in request and real user id aren't same");
         }

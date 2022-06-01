@@ -8,7 +8,6 @@ import com.innowise.core.dto.user.response.GetUserByIdResponse;
 import com.innowise.web.exception.ValidationException;
 import com.innowise.web.feign.UserFeignClient;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;

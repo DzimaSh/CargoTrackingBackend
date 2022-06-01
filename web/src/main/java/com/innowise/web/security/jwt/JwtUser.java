@@ -18,11 +18,11 @@ public class JwtUser implements UserDetails {
     private final String password;
     private final Integer clientId;
     private final boolean enabled;
-    private final Collection<? extends GrantedAuthority> authorities;
+    private final Collection<GrantedAuthority> authorities;
 
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
+    public Collection<GrantedAuthority> getAuthorities() {
         return authorities;
     }
 

@@ -2,7 +2,6 @@ package com.innowise.web.security.jwt;
 
 import com.innowise.core.entity.role.Role;
 import com.innowise.core.entity.user.User;
-import com.innowise.web.exception.JwtAuthenticationException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.impl.DefaultClaims;
 import lombok.RequiredArgsConstructor;
@@ -44,26 +43,20 @@ public class JwtUtil {
                 .compact();
     }
 
-    public Jws<Claims> decodeAndVerifyJWT(String token, boolean isAccessToken) {
+    public String getLoginFromJwt(String token, boolean isAccessToken) {
+        return decodeTokenBody(token, isAccessToken).getSubject();
+    }
+
+    public <T> T getClaimFromJwt(String token, String claimName, Class<T> type, boolean isAccessToken) {
+        return decodeTokenBody(token, isAccessToken).get(claimName, type);
+    }
+
+    private DefaultClaims decodeTokenBody(String token, boolean isAccessToken) {
         byte[] secret = isAccessToken ?
                 jwtParams.getAccessTokenSecret().getBytes() :
                 jwtParams.getRefreshTokenSecret().getBytes();
-        Jws<Claims> claims = Jwts.parser()
-                .setSigningKey(secret)
-                .parseClaimsJws(token);
-        if (verifyJwt(claims))
-            return claims;
-        return null;
+        return (DefaultClaims) Jwts.parser().setSigningKey(secret).parse(token).getBody();
     }
-
-    private boolean verifyJwt(Jws<Claims> claims) {
-        try {
-            return !claims.getBody().getExpiration().before(new Date());
-        } catch (JwtException | IllegalArgumentException e) {
-            throw new JwtAuthenticationException("JWT token is expired or invalid");
-        }
-    }
-
     private List<String> getUserRolesNames(Set<Role> roles) {
         return roles.stream()
                 .map(role -> role.getRole().name())
