@@ -28,7 +28,7 @@ public interface UserFeignClient {
     GetUsersResponse getUsersByFilterParams(@SpringQueryMap(true) GetUsersFilterParams params);
 
     @PutMapping
-    User getUserByLogin(@SpringQueryMap(true) GetUserByLoginRequest request);
+    User getUserByLogin(@RequestBody GetUserByLoginRequest request);
 
     @PostMapping
     String postUser(@RequestBody PostUserRequest request);

@@ -30,7 +30,7 @@ public class UserController {
     }
 
     @PutMapping
-    private User getUserByLogin(GetUserByLoginRequest request) {
+    private User getUserByLogin(@RequestBody GetUserByLoginRequest request) {
         return userService.getUserByLogin(request.getLogin());
     }
 
