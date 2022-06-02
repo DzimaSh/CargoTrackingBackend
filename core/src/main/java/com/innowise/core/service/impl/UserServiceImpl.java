@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public GetUserResponse getUserById(Integer id) {
-        User user = repository.findById(id).orElseThrow(() -> new UserNotFoundException("user not find with id " + id));
+        User user = repository.findById(id).orElseThrow(() -> new UserNotFoundException("User not find with id " + id));
         return new GetUserResponse(user);
     }
 
@@ -63,11 +63,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUsersById(List<Integer> ids) {
-        try {
-            repository.deleteAllById(ids);
-        } catch (EmptyResultDataAccessException exception) {
-            throw new UserNotFoundException(exception.getMessage());
-        }
+        ids.forEach(id -> {
+            User user = repository.findById(id).orElseThrow(() -> new UserNotFoundException("User not find with id " + id));
+            repository.delete(user);
+        });
     }
 
     @Override

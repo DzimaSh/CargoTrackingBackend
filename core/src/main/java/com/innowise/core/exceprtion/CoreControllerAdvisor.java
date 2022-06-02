@@ -12,6 +12,8 @@ import java.util.List;
 @ControllerAdvice
 public class CoreControllerAdvisor {
 
+    private final String UNEXPECTED_EXCEPTION_MESSAGE = "Something goes wrong... Our engineers already working on it!";
+
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException ex) {
         return buildResponse(HttpStatus.BAD_REQUEST, List.of(ex.getMessage()));
@@ -24,7 +26,8 @@ public class CoreControllerAdvisor {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleDefaultException(Exception ex) {
-        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, List.of(ex.getMessage()));
+        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR,
+                List.of(UNEXPECTED_EXCEPTION_MESSAGE, ex.getMessage()));
     }
 
     private ResponseEntity<ErrorResponse> buildResponse(HttpStatus status, List<String> errors) {

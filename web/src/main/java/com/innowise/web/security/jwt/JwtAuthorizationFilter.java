@@ -2,7 +2,10 @@ package com.innowise.web.security.jwt;
 
 import com.innowise.web.exception.JwtAuthenticationException;
 import com.innowise.web.security.AuthService;
+import com.innowise.web.util.ExceptionHandlingUtil;
+import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -31,7 +34,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             try {
                 String token = authorizationHeader.substring(BEARER_PREFIX.length());
 
-                String login = jwtUtil.getLoginFromJwt(token, true);
+                String login = jwtUtil.decodeLoginFromJwt(token, true);
                 JwtUser user = (JwtUser) jwtUserDetailsService.loadUserByUsername(login);
                 if (!AuthService.getAuthorizedUserIds().contains(user.getId())) {
                     throw new JwtAuthenticationException("user is logged out");
