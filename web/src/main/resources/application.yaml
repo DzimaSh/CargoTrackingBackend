@@ -19,6 +19,11 @@ spring:
     url: jdbc:postgresql://localhost:5432/trucking
     username: postgres
     password: shushkevich
+  mvc:
+    throw-exception-if-no-handler-found: true
+  web:
+    resources:
+      add-mappings: false
 
 service:
   user-core-url: http://localhost:8081

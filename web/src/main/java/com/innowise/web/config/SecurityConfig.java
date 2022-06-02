@@ -30,6 +30,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsService jwtUserDetailsService;
     private final JwtUtil jwtUtil;
+    private final ExceptionHandlingUtil exceptionHandlingUtil;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -49,7 +50,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(USER_API_ENDPOINTS).hasAnyAuthority(ADMIN.name(), SYS_ADMIN.name())
                 .anyRequest().authenticated();
 
-        http.addFilterBefore(new JwtAuthorizationFilter(jwtUtil, jwtUserDetailsService), UsernamePasswordAuthenticationFilter.class);
+        http.exceptionHandling()
+                .authenticationEntryPoint((request, response, authException) -> {
+                    exceptionHandlingUtil.sendExceptionToClient(response, authException, HttpStatus.UNAUTHORIZED);
+                })
+                .accessDeniedHandler((request, response, accessDeniedException) -> {
+                    exceptionHandlingUtil.sendExceptionToClient(response, accessDeniedException, HttpStatus.FORBIDDEN);
+                });
+        http.addFilterBefore(new JwtAuthorizationFilter(jwtUtil, jwtUserDetailsService, exceptionHandlingUtil), UsernamePasswordAuthenticationFilter.class);
     }
 
     @Override

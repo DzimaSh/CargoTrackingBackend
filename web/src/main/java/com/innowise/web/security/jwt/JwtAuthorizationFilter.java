@@ -21,24 +21,33 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
     private final UserDetailsService jwtUserDetailsService;
+    private final ExceptionHandlingUtil exceptionHandlingUtil;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         final String authorizationHeader = request.getHeader(AUTHORIZATION);
         final String BEARER_PREFIX = "Bearer ";
         if (authorizationHeader != null && authorizationHeader.startsWith(BEARER_PREFIX)) {
+            try {
+                String token = authorizationHeader.substring(BEARER_PREFIX.length());
 
-            String token = authorizationHeader.substring(BEARER_PREFIX.length());
-
-            String login = jwtUtil.decodeLoginFromJwt(token, true);
-            JwtUser user = (JwtUser) jwtUserDetailsService.loadUserByUsername(login);
-            if (!AuthService.getAuthorizedUserIds().contains(user.getId())) {
-                throw new JwtAuthenticationException("user is logged out");
+                String login = jwtUtil.getLoginFromJwt(token, true);
+                JwtUser user = (JwtUser) jwtUserDetailsService.loadUserByUsername(login);
+                if (!AuthService.getAuthorizedUserIds().contains(user.getId())) {
+                    throw new JwtAuthenticationException("user is logged out");
+                }
+                UsernamePasswordAuthenticationToken authenticationToken =
+                        new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities());
+                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+            } catch (JwtException ex) {
+                exceptionHandlingUtil.sendExceptionToClient(response, ex, HttpStatus.FORBIDDEN);
+                return;
+            } catch (Exception ex) {
+                exceptionHandlingUtil.sendExceptionToClient(response, ex, HttpStatus.INTERNAL_SERVER_ERROR);
+                return;
             }
-            UsernamePasswordAuthenticationToken authenticationToken =
-                    new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities());
-            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         }
         filterChain.doFilter(request, response);
     }
+
 }

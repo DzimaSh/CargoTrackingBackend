@@ -17,7 +17,8 @@ import java.util.List;
 @FeignClient(
         name = "UserFeignClient",
         url = "${service.user-core-url}",
-        path = "/api/users"
+        path = "/api/users",
+        configuration = {CustomFeignErrorDecoder.class}
 )
 public interface UserFeignClient {
     @GetMapping(value = "/{id}")
