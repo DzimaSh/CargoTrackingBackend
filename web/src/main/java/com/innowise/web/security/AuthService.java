@@ -45,7 +45,7 @@ public class AuthService {
         GetUserResponse user = feignClient.getUserByLogin(new GetUserByLoginRequest(userLogin));
 
         String accessToken, refreshToken;
-        if (user.getId() == jwtRequest.getUserId()) {
+        if (user.getId().equals(jwtRequest.getUserId())) {
             accessToken = jwtUtil.buildAccessToken(user);
             refreshToken = jwtUtil.buildRefreshToken(user);
         } else {
@@ -56,7 +56,7 @@ public class AuthService {
     }
 
     public void logout(LogoutRequest logoutRequest, JwtUser user) {
-        if (logoutRequest.getUserId() == user.getId()) {
+        if (logoutRequest.getUserId().equals(user.getId())) {
             authorizedUserIds.remove(logoutRequest.getUserId());
         } else {
             throw new JwtAuthenticationException("User id in request and real user id aren't same");
