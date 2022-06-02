@@ -55,12 +55,8 @@ public class AuthService {
         return resolveTokensResponse(accessToken, refreshToken);
     }
 
-    public void logout(LogoutRequest logoutRequest, JwtUser user) {
-        if (logoutRequest.getUserId().equals(user.getId())) {
-            authorizedUserIds.remove(logoutRequest.getUserId());
-        } else {
-            throw new JwtAuthenticationException("User id in request and real user id aren't same");
-        }
+    public void logout(LogoutRequest logoutRequest) {
+        authorizedUserIds.remove(logoutRequest.getUserId());
     }
 
     public static Set<Integer> getAuthorizedUserIds() {

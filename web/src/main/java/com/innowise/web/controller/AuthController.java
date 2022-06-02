@@ -46,13 +46,12 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout(@AuthenticationPrincipal JwtUser user,
-                                       @RequestBody @Valid LogoutRequest logoutRequest,
+    public ResponseEntity<Void> logout(@RequestBody @Valid LogoutRequest logoutRequest,
                                        BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new ValidationException(bindingResult);
         }
-        authService.logout(logoutRequest, user);
+        authService.logout(logoutRequest);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

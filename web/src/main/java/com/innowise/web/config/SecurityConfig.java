@@ -26,8 +26,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final String GET_USERS_API_ENDPOINT = "/api/users";
     private final String USER_API_ENDPOINTS = "/api/users/**";
-    private final String[] AUTH_ENDPOINTS = {"/api/sign-in", "/api/refresh"};
-    private final String LOGOUT_ENDPOINT = "/api/logout";
+    private final String[] AUTH_ENDPOINTS = {"/api/sign-in", "/api/refresh", "/api/logout"};
 
     private final UserDetailsService jwtUserDetailsService;
     private final JwtUtil jwtUtil;
@@ -46,7 +45,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/api/about").permitAll()
                 .antMatchers(HttpMethod.POST, AUTH_ENDPOINTS).permitAll()
-                .antMatchers(HttpMethod.POST, LOGOUT_ENDPOINT).authenticated()
                 .antMatchers(HttpMethod.GET, GET_USERS_API_ENDPOINT).hasAnyAuthority(ADMIN.name(), DISPATCHER.name())
                 .antMatchers(USER_API_ENDPOINTS).hasAnyAuthority(ADMIN.name(), SYS_ADMIN.name())
                 .anyRequest().authenticated();
