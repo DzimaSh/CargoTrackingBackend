@@ -1,11 +1,10 @@
 package com.innowise.web.security;
 
-import com.innowise.core.dto.user.request.GetUserByLoginRequest;
-import com.innowise.core.entity.user.User;
-import com.innowise.web.dto.request.AuthRequest;
-import com.innowise.web.dto.request.LogoutRequest;
-import com.innowise.web.dto.request.RefreshJwtRequest;
-import com.innowise.web.dto.response.JwtResponse;
+import com.innowise.web.dto.auth.request.AuthRequest;
+import com.innowise.web.dto.auth.request.LogoutRequest;
+import com.innowise.web.dto.auth.request.RefreshJwtRequest;
+import com.innowise.web.dto.user.request.GetUserByLoginRequest;
+import com.innowise.web.dto.user.response.GetUserResponse;
 import com.innowise.web.exception.JwtAuthenticationException;
 import com.innowise.web.feign.UserFeignClient;
 import com.innowise.web.security.jwt.JwtUser;
@@ -27,8 +26,8 @@ public class AuthService {
     private final JwtUtil jwtUtil;
     private static final Set<Integer> authorizedUserIds = new HashSet<>();
 
-    public JwtResponse authenticate(AuthRequest authRequest) {
-        User user = feignClient.getUserByLogin(
+    public String authenticate(AuthRequest authRequest) {
+        GetUserResponse user = feignClient.getUserByLogin(
                 new GetUserByLoginRequest(authRequest.getLogin()));
         authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(user.getLogin(), authRequest.getPassword())
@@ -38,12 +37,12 @@ public class AuthService {
         String accessToken = jwtUtil.buildAccessToken(user);
         String refreshToken = jwtUtil.buildRefreshToken(user);
 
-        return new JwtResponse(accessToken, refreshToken);
+        return resolveTokensResponse(accessToken, refreshToken);
     }
 
-    public JwtResponse refresh(RefreshJwtRequest jwtRequest) {
+    public String refresh(RefreshJwtRequest jwtRequest) {
         String userLogin = jwtUtil.decodeLoginFromJwt(jwtRequest.getToken(), false);
-        User user = feignClient.getUserByLogin(new GetUserByLoginRequest(userLogin));
+        GetUserResponse user = feignClient.getUserByLogin(new GetUserByLoginRequest(userLogin));
 
         String accessToken, refreshToken;
         if (user.getId() == jwtRequest.getUserId()) {
@@ -53,7 +52,7 @@ public class AuthService {
             throw new JwtAuthenticationException("User id in request and real user id aren't same");
         }
 
-        return new JwtResponse(accessToken, refreshToken);
+        return resolveTokensResponse(accessToken, refreshToken);
     }
 
     public void logout(LogoutRequest logoutRequest, JwtUser user) {
@@ -66,5 +65,14 @@ public class AuthService {
 
     public static Set<Integer> getAuthorizedUserIds() {
         return authorizedUserIds;
+    }
+
+    private String resolveTokensResponse(String accessToken, String refreshToken) {
+        StringBuilder jwtResponse = new StringBuilder();
+        jwtResponse
+                .append(accessToken)
+                .append(" ")
+                .append(refreshToken);
+        return jwtResponse.toString();
     }
 }

@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @NoArgsConstructor
-public class GetUserByIdResponse {
+public class GetUserResponse {
     private Integer id;
     private String name;
     private String surname;
@@ -32,7 +32,7 @@ public class GetUserByIdResponse {
     private String issuedBy;
     private Set<Roles> userRoles;
 
-    public GetUserByIdResponse(User user) {
+    public GetUserResponse(User user) {
         id = user.getId();
         name = user.getName();
         surname = user.getSurname();

@@ -1,8 +1,8 @@
 package com.innowise.web.security;
 
-import com.innowise.core.dto.user.request.GetUserByLoginRequest;
-import com.innowise.core.entity.role.Role;
-import com.innowise.core.entity.user.User;
+import com.innowise.web.dto.user.request.GetUserByLoginRequest;
+import com.innowise.web.dto.user.response.GetUserResponse;
+import com.innowise.web.enums.Roles;
 import com.innowise.web.feign.UserFeignClient;
 import com.innowise.web.security.jwt.JwtUser;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ public class JwtUserDetailsService implements UserDetailsService {
 
     @Override
     public JwtUser loadUserByUsername(String login) throws UsernameNotFoundException {
-        User user = userFeignClient.getUserByLogin(new GetUserByLoginRequest(login));
+        GetUserResponse user = userFeignClient.getUserByLogin(new GetUserByLoginRequest(login));
         if (user == null) {
             throw new UsernameNotFoundException("User with login \"" + login + "\" does not exist");
         } else  {
@@ -34,14 +34,14 @@ public class JwtUserDetailsService implements UserDetailsService {
                     user.getPassword(),
                     user.getClientId(),
                     true,
-                    convertUserRolesToSpringAuthorities(user.getRoles()));
+                    convertUserRolesToSpringAuthorities(user.getUserRoles()));
         }
     }
 
-    private Collection<GrantedAuthority> convertUserRolesToSpringAuthorities(Set<Role> roles) {
+    private Collection<GrantedAuthority> convertUserRolesToSpringAuthorities(Set<Roles> roles) {
         if (roles != null && roles.size() > 0) {
             return roles.stream()
-                    .map(role -> role.getRole().name())
+                    .map(Roles::name)
                     .map(SimpleGrantedAuthority::new)
                     .collect(Collectors.toSet());
         }

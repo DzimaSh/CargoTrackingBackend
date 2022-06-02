@@ -17,7 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import static com.innowise.core.entity.enums.Roles.*;
+import static com.innowise.web.enums.Roles.*;
 
 @Configuration
 @EnableWebSecurity

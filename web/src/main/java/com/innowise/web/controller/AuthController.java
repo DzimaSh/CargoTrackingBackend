@@ -1,9 +1,8 @@
 package com.innowise.web.controller;
 
-import com.innowise.web.dto.request.AuthRequest;
-import com.innowise.web.dto.request.LogoutRequest;
-import com.innowise.web.dto.request.RefreshJwtRequest;
-import com.innowise.web.dto.response.JwtResponse;
+import com.innowise.web.dto.auth.request.AuthRequest;
+import com.innowise.web.dto.auth.request.LogoutRequest;
+import com.innowise.web.dto.auth.request.RefreshJwtRequest;
 import com.innowise.web.exception.ValidationException;
 import com.innowise.web.security.AuthService;
 import com.innowise.web.security.jwt.JwtUser;
@@ -27,23 +26,23 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/sign-in")
-    public ResponseEntity<JwtResponse> signIn(@RequestBody @Valid AuthRequest authRequest,
+    public ResponseEntity<String> signIn(@RequestBody @Valid AuthRequest authRequest,
                                               BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new ValidationException(bindingResult);
         }
-        JwtResponse response = authService.authenticate(authRequest);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        String jwtResponse = authService.authenticate(authRequest);
+        return new ResponseEntity<>(jwtResponse, HttpStatus.OK);
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<JwtResponse> refreshJwt(@RequestBody @Valid RefreshJwtRequest jwtRequest,
+    public ResponseEntity<String> refreshJwt(@RequestBody @Valid RefreshJwtRequest jwtRequest,
                                                   BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new ValidationException(bindingResult);
         }
-        JwtResponse response = authService.refresh(jwtRequest);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        String jwtResponse = authService.refresh(jwtRequest);
+        return new ResponseEntity<>(jwtResponse, HttpStatus.OK);
     }
 
     @PostMapping("/logout")

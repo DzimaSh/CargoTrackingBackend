@@ -1,10 +1,10 @@
 package com.innowise.web.controller;
 
-import com.innowise.core.controller.util.GetUsersFilterParams;
-import com.innowise.core.dto.user.request.PostUserRequest;
-import com.innowise.core.dto.user.request.PutUserRequest;
-import com.innowise.core.dto.user.response.GetUsersResponse;
-import com.innowise.core.dto.user.response.GetUserByIdResponse;
+import com.innowise.web.controller.util.GetUsersFilterParams;
+import com.innowise.web.dto.user.request.PostUserRequest;
+import com.innowise.web.dto.user.request.PutUserRequest;
+import com.innowise.web.dto.user.response.GetUserResponse;
+import com.innowise.web.dto.user.response.GetUsersResponse;
 import com.innowise.web.exception.ValidationException;
 import com.innowise.web.feign.UserFeignClient;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +31,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<GetUserByIdResponse> getUser(@PathVariable Integer id) {
+    public ResponseEntity<GetUserResponse> getUser(@PathVariable Integer id) {
         return new ResponseEntity<>(usersServiceClient.getUserById(id), HttpStatus.OK);
     }
 

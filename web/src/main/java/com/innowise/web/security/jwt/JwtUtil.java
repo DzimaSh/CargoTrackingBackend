@@ -1,7 +1,7 @@
 package com.innowise.web.security.jwt;
 
-import com.innowise.core.entity.role.Role;
-import com.innowise.core.entity.user.User;
+import com.innowise.web.dto.user.response.GetUserResponse;
+import com.innowise.web.enums.Roles;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.impl.DefaultClaims;
 import lombok.RequiredArgsConstructor;
@@ -18,9 +18,9 @@ public class JwtUtil {
 
     private final JwtParams jwtParams;
 
-    public String buildAccessToken(User user) {
+    public String buildAccessToken(GetUserResponse user) {
         Claims claims = new DefaultClaims();
-        claims.putIfAbsent("roles", getUserRolesNames(user.getRoles()));
+        claims.putIfAbsent("roles", getUserRolesNames(user.getUserRoles()));
         if (user.getClientId() != null) {
             claims.putIfAbsent("clientId", user.getClientId());
         }
@@ -33,7 +33,7 @@ public class JwtUtil {
                 .compact();
     }
 
-    public String buildRefreshToken(User user) {
+    public String buildRefreshToken(GetUserResponse user) {
         return Jwts.builder()
                 .setSubject(user.getLogin())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
@@ -57,9 +57,9 @@ public class JwtUtil {
                 jwtParams.getRefreshTokenSecret().getBytes();
         return (DefaultClaims) Jwts.parser().setSigningKey(secret).parse(token).getBody();
     }
-    private List<String> getUserRolesNames(Set<Role> roles) {
+    private List<String> getUserRolesNames(Set<Roles> roles) {
         return roles.stream()
-                .map(role -> role.getRole().name())
+                .map(Roles::name)
                 .collect(Collectors.toList());
     }
 }
