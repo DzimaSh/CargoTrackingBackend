@@ -1,20 +1,20 @@
 package com.innowise.web.controller;
 
-import com.innowise.web.project.ProjectParams;
+import com.innowise.web.info.ProjectParams;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api")
 @RequiredArgsConstructor
 public class MainController {
 
     private final ProjectParams params;
 
-    @GetMapping("/about")
-    public ProjectParams getInfoAboutProject() {
-        return params;
+    @GetMapping("/api/about")
+    public ResponseEntity<ProjectParams> getProjectInfo() {
+        return new ResponseEntity<>(params, HttpStatus.OK);
     }
+
 }

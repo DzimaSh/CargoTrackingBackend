@@ -1,11 +1,12 @@
-package com.innowise.web.project;
+package com.innowise.web.info;
 
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix = "project")
-@Getter @Setter
+@Getter
+@Setter
 public class ProjectParams {
 
     private String applicationName;

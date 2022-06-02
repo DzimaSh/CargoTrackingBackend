@@ -1,9 +1,10 @@
 package com.innowise.core.controller;
 
 import com.innowise.core.controller.util.GetUsersFilterParams;
+import com.innowise.core.dto.user.request.GetUserByLoginRequest;
 import com.innowise.core.dto.user.response.GetUsersResponse;
 import com.innowise.core.dto.user.request.PostUserRequest;
-import com.innowise.core.dto.user.response.GetUserByIdResponse;
+import com.innowise.core.dto.user.response.GetUserResponse;
 import com.innowise.core.entity.user.User;
 import com.innowise.core.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -17,14 +18,20 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+
     @GetMapping
     private GetUsersResponse getUsers(GetUsersFilterParams params) {
         return userService.getAllUsersByFilterParams(params);
     }
 
     @GetMapping("/{id}")
-    private GetUserByIdResponse getUser(@PathVariable Integer id) {
+    private GetUserResponse getUser(@PathVariable Integer id) {
         return userService.getUserById(id);
+    }
+
+    @PutMapping
+    private GetUserResponse getUserByLogin(@RequestBody GetUserByLoginRequest request) {
+        return userService.getUserByLogin(request.getLogin());
     }
 
     @PostMapping

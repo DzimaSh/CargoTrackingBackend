@@ -1,7 +1,7 @@
 package com.innowise.core.service.impl;
 
 import com.innowise.core.controller.util.GetUsersFilterParams;
-import com.innowise.core.dto.user.response.GetUserByIdResponse;
+import com.innowise.core.dto.user.response.GetUserResponse;
 import com.innowise.core.dto.user.response.GetUsersResponse;
 import com.innowise.core.entity.role.Role;
 import com.innowise.core.entity.role.Role_;
@@ -32,9 +32,9 @@ public class UserServiceImpl implements UserService {
     private final UserRepository repository;
 
     @Override
-    public GetUserByIdResponse getUserById(Integer id) {
-        User user = repository.findById(id).orElseThrow(() -> new UserNotFoundException("account not find with id " + id));
-        return new GetUserByIdResponse(user);
+    public GetUserResponse getUserById(Integer id) {
+        User user = repository.findById(id).orElseThrow(() -> new UserNotFoundException("user not find with id " + id));
+        return new GetUserResponse(user);
     }
 
     @Override
@@ -43,10 +43,17 @@ public class UserServiceImpl implements UserService {
                         filteringUsersToPredicate(root, query, builder, params)
                 )
                 , PageRequest.of(params.getPageNumber(), params.getPageSize()));
-        List<GetUserByIdResponse> users = page.getContent().stream().
-                map(GetUserByIdResponse::new).
+        List<GetUserResponse> users = page.getContent().stream().
+                map(GetUserResponse::new).
                 collect(Collectors.toList());
         return new GetUsersResponse(users, page.getTotalElements());
+    }
+
+    @Override
+    public GetUserResponse getUserByLogin(String login) {
+        User user = repository.findByLogin(login)
+                .orElseThrow(() -> new UserNotFoundException("User with login " + login + "not found"));
+        return new GetUserResponse(user);
     }
 
     @Override

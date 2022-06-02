@@ -1,10 +1,11 @@
 package com.innowise.web.feign;
 
-import com.innowise.core.controller.util.GetUsersFilterParams;
-import com.innowise.core.dto.user.request.PostUserRequest;
-import com.innowise.core.dto.user.request.PutUserRequest;
-import com.innowise.core.dto.user.response.GetUsersResponse;
-import com.innowise.core.dto.user.response.GetUserByIdResponse;
+import com.innowise.web.controller.util.GetUsersFilterParams;
+import com.innowise.web.dto.user.request.GetUserByLoginRequest;
+import com.innowise.web.dto.user.request.PostUserRequest;
+import com.innowise.web.dto.user.request.PutUserRequest;
+import com.innowise.web.dto.user.response.GetUserResponse;
+import com.innowise.web.dto.user.response.GetUsersResponse;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
@@ -20,10 +21,13 @@ import java.util.List;
 )
 public interface UserFeignClient {
     @GetMapping(value = "/{id}")
-    GetUserByIdResponse getUserById(@PathVariable Integer id);
+    GetUserResponse getUserById(@PathVariable Integer id);
 
     @GetMapping
     GetUsersResponse getUsersByFilterParams(@SpringQueryMap(true) GetUsersFilterParams params);
+
+    @PutMapping
+    GetUserResponse getUserByLogin(@RequestBody GetUserByLoginRequest request);
 
     @PostMapping
     String postUser(@RequestBody PostUserRequest request);

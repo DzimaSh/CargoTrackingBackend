@@ -195,7 +195,7 @@ databaseChangeLog:
                   value: "admin"
               - column:
                   name: password
-                  value: "admin"
+                  value: "$2a$12$xJ0yCBhY829ITcyMu2fuTetJleYTiSm.krbDpNRg.caqrb0Jd4AKK"
         - insert:
             tableName: users_roles
             columns:

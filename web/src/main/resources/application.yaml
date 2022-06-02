@@ -2,6 +2,13 @@ project:
   version: 0.0.1-SNAPSHOT
   applicationName: CargoTrackingBackend
 
+jwt:
+  accessTokenSecret: 1234
+  accessTokenLifeTime: 360000
+
+  refreshTokenSecret: 1234
+  refreshTokenLifeTime: 1200000
+
 server:
   port: 8080
 

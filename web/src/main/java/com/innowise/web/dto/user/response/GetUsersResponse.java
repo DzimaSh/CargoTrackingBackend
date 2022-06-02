@@ -1,4 +1,4 @@
-package com.innowise.core.dto.user.response;
+package com.innowise.web.dto.user.response;
 
 import lombok.Getter;
 import lombok.Setter;
