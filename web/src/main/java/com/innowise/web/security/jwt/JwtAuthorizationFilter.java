@@ -43,7 +43,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                         new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             } catch (JwtException ex) {
-                exceptionHandlingUtil.sendExceptionToClient(response, ex, HttpStatus.FORBIDDEN);
+                exceptionHandlingUtil.sendExceptionToClient(response, ex, HttpStatus.UNAUTHORIZED);
                 return;
             } catch (Exception ex) {
                 exceptionHandlingUtil.sendExceptionToClient(response, ex, HttpStatus.INTERNAL_SERVER_ERROR);

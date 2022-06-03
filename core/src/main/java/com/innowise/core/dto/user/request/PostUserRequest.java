@@ -3,6 +3,7 @@ package com.innowise.core.dto.user.request;
 import com.innowise.core.entity.role.Role;
 import com.innowise.core.entity.user.User;
 import com.innowise.core.entity.enums.Roles;
+import com.innowise.core.validation.annotations.Unique;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,6 +30,7 @@ public class PostUserRequest {
 
     private Date bornDate;
 
+    @Unique(uniqueConstraintName = "email", message = "User with this email already exists")
     private String email;
 
     private String town;
@@ -39,6 +41,7 @@ public class PostUserRequest {
 
     private String flat;
 
+    @Unique(uniqueConstraintName = "login", message = "User with this login already exists")
     private String login;
 
     private String password;

@@ -4,7 +4,7 @@ project:
 
 jwt:
   accessTokenSecret: 1234
-  accessTokenLifeTime: 360000
+  accessTokenLifeTime: 360000000000
 
   refreshTokenSecret: 1234
   refreshTokenLifeTime: 1200000

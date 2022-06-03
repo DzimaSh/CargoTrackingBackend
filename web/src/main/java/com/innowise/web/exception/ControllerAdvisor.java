@@ -38,7 +38,7 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(JwtException.class)
     public ResponseEntity<ErrorResponse> handleJwtException(JwtException ex) {
-        return exceptionHandlingUtil.buildErrorResponseEntity(HttpStatus.FORBIDDEN, List.of("JWT is expired or invalid"));
+        return exceptionHandlingUtil.buildErrorResponseEntity(HttpStatus.UNAUTHORIZED, List.of("JWT is invalid"));
     }
 
     @ExceptionHandler(CoreGlobalException.class)
