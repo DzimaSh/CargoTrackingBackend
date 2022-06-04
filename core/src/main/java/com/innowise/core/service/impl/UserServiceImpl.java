@@ -8,11 +8,12 @@ import com.innowise.core.entity.role.Role_;
 import com.innowise.core.entity.user.User;
 import com.innowise.core.entity.enums.Roles;
 import com.innowise.core.entity.user.User_;
+import com.innowise.core.exceprtion.UserExistsException;
 import com.innowise.core.exceprtion.UserNotFoundException;
+import com.innowise.core.repository.RoleRepository;
 import com.innowise.core.repository.UserRepository;
 import com.innowise.core.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -28,18 +29,21 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+
     private final EntityManager entityManager;
-    private final UserRepository repository;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
 
     @Override
     public GetUserResponse getUserById(Integer id) {
-        User user = repository.findById(id).orElseThrow(() -> new UserNotFoundException("User not find with id " + id));
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("User with id " + id + " not found"));
         return new GetUserResponse(user);
     }
 
     @Override
     public GetUsersResponse getAllUsersByFilterParams(GetUsersFilterParams params) {
-        Page<User> page = repository.findAll(((root, query, builder) ->
+        Page<User> page = userRepository.findAll(((root, query, builder) ->
                         filteringUsersToPredicate(root, query, builder, params)
                 )
                 , PageRequest.of(params.getPageNumber(), params.getPageSize()));
@@ -51,29 +55,45 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public GetUserResponse getUserByLogin(String login) {
-        User user = repository.findByLogin(login)
-                .orElseThrow(() -> new UserNotFoundException("User with login " + login + "not found"));
+        User user = userRepository.findByLogin(login)
+                .orElseThrow(() -> new UserNotFoundException("User with login " + login + " not found"));
         return new GetUserResponse(user);
     }
 
     @Override
     public Integer createUser(User user) {
-        return repository.save(user).getId();
+        if (isUserSys_Admin(user) && isSys_AdminExists())
+            throw new UserExistsException("Sys_admin already exists");
+        return userRepository.save(user).getId();
     }
 
     @Override
     public void deleteUsersById(List<Integer> ids) {
         ids.forEach(id -> {
-            User user = repository.findById(id).orElseThrow(() -> new UserNotFoundException("User not find with id " + id));
-            repository.delete(user);
+            User user = userRepository.findById(id)
+                    .orElseThrow(() -> new UserNotFoundException("User not find with id " + id));
+
+            if (isUserSys_Admin(user) && isSys_AdminExists())
+                throw new UserExistsException("You can't delete sys_admin");
+
+            userRepository.delete(user);
         });
     }
 
     @Override
     public void updateUser(User updatedUser, Integer id) {
-        User userToUpdate = repository.getById(id);
+        User userToUpdate = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("User with id " + id + " not found"));
+
+        if (!isUserSys_Admin(userToUpdate)) {
+            if (isUserSys_Admin(updatedUser) && isSys_AdminExists())
+                throw new UserExistsException("Sys_admin already exists");
+        } else {
+            throw new UserExistsException("You can't update sys_admin");
+        }
+
         updatedUser.setId(userToUpdate.getId());
-        repository.save(updatedUser);
+        userRepository.save(updatedUser);
     }
 
 
@@ -105,5 +125,17 @@ public class UserServiceImpl implements UserService {
             query.groupBy(root.get("id")).having(builder.equal(builder.countDistinct(role), params.getRoles().length));
         }
         return builder.and(predicates.toArray(new Predicate[]{}));
+    }
+
+    private boolean isUserSys_Admin(User user) {
+        for (Role role : user.getRoles()) {
+            if (role.getRole().equals(Roles.SYS_ADMIN))
+                return true;
+        }
+        return false;
+    }
+
+    private boolean isSys_AdminExists() {
+        return roleRepository.findById(Roles.SYS_ADMIN.ordinal()).isPresent();
     }
 }

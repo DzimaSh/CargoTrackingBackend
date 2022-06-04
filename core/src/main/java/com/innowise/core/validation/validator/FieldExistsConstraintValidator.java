@@ -1,4 +1,4 @@
-package com.innowise.core.validation;
+package com.innowise.core.validation.validator;
 
 import com.innowise.core.entity.user.User;
 import com.innowise.core.exceprtion.UserExistsException;
@@ -32,13 +32,16 @@ public class FieldExistsConstraintValidator implements ConstraintValidator<Uniqu
         if (entity.isEmpty())
             return true;
         else {
-            String exceptionMessage = new StringBuilder()
-                    .append("User with ")
-                    .append(uniqueConstraintName)
-                    .append(" ")
-                    .append(value)
-                    .append(" already exists")
-                    .toString();
+            String exceptionMessage = context.getDefaultConstraintMessageTemplate();
+            if (exceptionMessage.equals("")) {
+                exceptionMessage = new StringBuilder()
+                        .append("User with ")
+                        .append(uniqueConstraintName)
+                        .append(" ")
+                        .append(value)
+                        .append(" already exists")
+                        .toString();
+            }
             throw new UserExistsException(exceptionMessage);
         }
     }

@@ -2,6 +2,7 @@ package com.innowise.core.controller;
 
 import com.innowise.core.controller.util.GetUsersFilterParams;
 import com.innowise.core.dto.user.request.GetUserByLoginRequest;
+import com.innowise.core.dto.user.request.PutUserRequest;
 import com.innowise.core.dto.user.response.GetUsersResponse;
 import com.innowise.core.dto.user.request.PostUserRequest;
 import com.innowise.core.dto.user.response.GetUserResponse;
@@ -50,7 +51,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    private void updateUser(@RequestBody @Valid PostUserRequest request, @PathVariable Integer id) {
+    private void updateUser(@RequestBody @Valid PutUserRequest request, @PathVariable Integer id) {
         userService.updateUser(request.buildUser(), id);
     }
 }

@@ -66,7 +66,7 @@ public class PostUserRequest {
     @Size(max = 50, message = "Establishment that have issued the passport name is too long")
     private String issuedBy;
 
-    @NotNull(message = "at least one role is required")
+    @NotEmpty(message = "at least one role is required")
     private Set<Roles> userRoles;
 
 }

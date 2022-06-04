@@ -30,7 +30,7 @@ public class PostUserRequest {
 
     private Date bornDate;
 
-    @Unique(uniqueConstraintName = "email", message = "User with this email already exists")
+    @Unique(uniqueConstraintName = "email")
     private String email;
 
     private String town;
@@ -41,7 +41,7 @@ public class PostUserRequest {
 
     private String flat;
 
-    @Unique(uniqueConstraintName = "login", message = "User with this login already exists")
+    @Unique(uniqueConstraintName = "login")
     private String login;
 
     private String password;

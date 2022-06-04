@@ -13,12 +13,6 @@ server:
   port: 8080
 
 spring:
-  application:
-    name: web
-  datasource:
-    url: jdbc:postgresql://localhost:5432/trucking
-    username: postgres
-    password: shushkevich
   mvc:
     throw-exception-if-no-handler-found: true
   web:

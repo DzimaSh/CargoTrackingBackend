@@ -26,14 +26,14 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
     public ResponseEntity<ErrorResponse> handleValidationExceptions(ValidationException ex) {
         List<String> errors = new ArrayList<>();
         ex.getBindingResult().getAllErrors().forEach((error) -> {
-            StringBuilder builder = new StringBuilder();
-            builder
-                    .append(((FieldError) error).getField())
-                    .append(" ")
-                    .append(error.getDefaultMessage());
-            errors.add(builder.toString());
+            errors.add(error.getDefaultMessage());
         });
         return exceptionHandlingUtil.buildErrorResponseEntity(HttpStatus.BAD_REQUEST, errors);
+    }
+
+    @ExceptionHandler(ArgumentsNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleArgumentNotValidException(ArgumentsNotValidException ex) {
+        return exceptionHandlingUtil.buildErrorResponseEntity(HttpStatus.BAD_REQUEST, List.of(ex.getMessage()));
     }
 
     @ExceptionHandler(JwtException.class)
