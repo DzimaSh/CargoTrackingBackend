@@ -13,12 +13,12 @@ public class CoreControllerAdvisor {
 
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException ex) {
-        return buildResponse(HttpStatus.BAD_REQUEST, List.of(ex.getMessage()));
+        return buildResponse(ex.getStatus(), List.of(ex.getMessage()));
     }
 
     @ExceptionHandler(UserExistsException.class)
     public ResponseEntity<ErrorResponse> handleUserExistsException(UserExistsException ex) {
-        return buildResponse(HttpStatus.CONFLICT, List.of(ex.getMessage()));
+        return buildResponse(ex.getStatus(), List.of(ex.getMessage()));
     }
 
     private ResponseEntity<ErrorResponse> buildResponse(HttpStatus status, List<String> errors) {

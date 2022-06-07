@@ -9,7 +9,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.*;
 import java.sql.Date;
 import java.util.Set;
 import java.util.stream.Collectors;

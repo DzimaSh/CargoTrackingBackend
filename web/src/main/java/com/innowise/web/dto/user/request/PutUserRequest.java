@@ -9,6 +9,6 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class PutUserRequest extends PostUserRequest{
 
-    @NotNull
+    @NotNull(message = "Indicate if the password has been changed")
     private Boolean isChangePassword;
 }

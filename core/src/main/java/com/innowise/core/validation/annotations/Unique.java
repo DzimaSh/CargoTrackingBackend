@@ -8,7 +8,7 @@ import java.lang.annotation.*;
 
 @Documented
 @Constraint(validatedBy = FieldExistsConstraintValidator.class)
-@Target( { ElementType.METHOD, ElementType.FIELD })
+@Target( { ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Unique {
     String message() default "";

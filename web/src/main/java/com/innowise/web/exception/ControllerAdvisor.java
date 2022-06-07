@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
@@ -67,11 +66,5 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(
                 exceptionHandlingUtil.buildErrorResponseObject(status, errors),
                 status);
-    }
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleDefaultException(Exception ex) {
-        return exceptionHandlingUtil.buildErrorResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR,
-                List.of(ExceptionHandlingUtil.UNEXPECTED_EXCEPTION_MESSAGE, ex.getMessage()));
     }
 }

@@ -1,8 +1,8 @@
 package com.innowise.web.controller;
 
-import com.innowise.web.dto.auth.request.AuthRequest;
-import com.innowise.web.dto.auth.request.LogoutRequest;
-import com.innowise.web.dto.auth.request.RefreshJwtRequest;
+import com.innowise.web.dto.auth.AuthRequest;
+import com.innowise.web.dto.auth.LogoutRequest;
+import com.innowise.web.dto.auth.RefreshJwtRequest;
 import com.innowise.web.exception.ValidationException;
 import com.innowise.web.security.AuthService;
 import lombok.RequiredArgsConstructor;

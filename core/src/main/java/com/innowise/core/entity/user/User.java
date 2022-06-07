@@ -28,6 +28,7 @@ public class User {
     @Column(name = "born_date")
     private Date bornDate;
 
+    @Column(unique = true)
     private String email;
 
     private String town;
@@ -38,6 +39,7 @@ public class User {
 
     private String flat;
 
+    @Column(unique = true)
     private String login;
 
     private String password;

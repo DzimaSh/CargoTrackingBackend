@@ -5,6 +5,7 @@ import com.innowise.core.exceprtion.UserExistsException;
 import com.innowise.core.validation.annotations.Unique;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import javax.validation.ConstraintValidator;
@@ -42,7 +43,7 @@ public class FieldExistsConstraintValidator implements ConstraintValidator<Uniqu
                         .append(" already exists")
                         .toString();
             }
-            throw new UserExistsException(exceptionMessage);
+            throw new UserExistsException(exceptionMessage, HttpStatus.CONFLICT);
         }
     }
 }
