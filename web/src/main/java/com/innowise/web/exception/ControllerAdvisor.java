@@ -50,10 +50,10 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
         List<String> errors = new ArrayList<>();
         switch (status) {
             case NOT_FOUND:
-                errors.add("Page you're looking for not found!");
+                errors.add("Resource you're looking for not found!");
                 break;
             case BAD_REQUEST:
-                errors.add("Arguments in request cannot be resolved.");
+                errors.add("Invalid input");
                 break;
             case METHOD_NOT_ALLOWED:
                 errors.add(ex.getMessage());
