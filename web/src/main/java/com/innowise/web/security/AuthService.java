@@ -1,13 +1,10 @@
 package com.innowise.web.security;
 
-import com.innowise.web.dto.auth.request.AuthRequest;
-import com.innowise.web.dto.auth.request.LogoutRequest;
-import com.innowise.web.dto.auth.request.RefreshJwtRequest;
+import com.innowise.web.dto.auth.*;
 import com.innowise.web.dto.user.request.GetUserByLoginRequest;
 import com.innowise.web.dto.user.response.GetUserResponse;
 import com.innowise.web.exception.JwtAuthenticationException;
 import com.innowise.web.feign.UserFeignClient;
-import com.innowise.web.security.jwt.JwtUser;
 import com.innowise.web.security.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;

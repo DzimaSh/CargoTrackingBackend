@@ -1,4 +1,4 @@
-package com.innowise.web.dto.auth.request;
+package com.innowise.web.dto.auth;
 
 import lombok.Getter;
 import lombok.Setter;

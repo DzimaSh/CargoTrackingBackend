@@ -5,6 +5,7 @@ import com.innowise.web.dto.user.request.PostUserRequest;
 import com.innowise.web.dto.user.request.PutUserRequest;
 import com.innowise.web.dto.user.response.GetUserResponse;
 import com.innowise.web.dto.user.response.GetUsersResponse;
+import com.innowise.web.exception.ArgumentsNotValidException;
 import com.innowise.web.exception.ValidationException;
 import com.innowise.web.feign.UserFeignClient;
 import lombok.RequiredArgsConstructor;
@@ -45,6 +46,8 @@ public class UserController {
 
     @DeleteMapping
     public ResponseEntity<Void> deleteUser(@RequestBody List<Integer> userIds) {
+        if (userIds.contains(null))
+            throw new ArgumentsNotValidException("Given list contains empty values");
         usersServiceClient.deleteUser(userIds);
         return new ResponseEntity<>(HttpStatus.OK);
     }

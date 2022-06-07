@@ -4,21 +4,20 @@ project:
 
 jwt:
   accessTokenSecret: 1234
-  accessTokenLifeTime: 360000
+  accessTokenLifeTime: 300000
 
   refreshTokenSecret: 1234
   refreshTokenLifeTime: 1200000
 
 server:
-  port: 8080
+  port: ${WEB_SERVER_PORT}
 
 spring:
-  application:
-    name: web
-  datasource:
-    url: jdbc:postgresql://localhost:5432/trucking
-    username: postgres
-    password: shushkevich
+  mvc:
+    throw-exception-if-no-handler-found: true
+  web:
+    resources:
+      add-mappings: false
 
 service:
-  user-core-url: http://localhost:8081
+  user-core-url: http://localhost:${CORE_SERVER_PORT}

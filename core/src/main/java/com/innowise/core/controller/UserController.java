@@ -2,14 +2,15 @@ package com.innowise.core.controller;
 
 import com.innowise.core.controller.util.GetUsersFilterParams;
 import com.innowise.core.dto.user.request.GetUserByLoginRequest;
+import com.innowise.core.dto.user.request.PutUserRequest;
 import com.innowise.core.dto.user.response.GetUsersResponse;
 import com.innowise.core.dto.user.request.PostUserRequest;
 import com.innowise.core.dto.user.response.GetUserResponse;
-import com.innowise.core.entity.user.User;
 import com.innowise.core.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -35,9 +36,8 @@ public class UserController {
     }
 
     @PostMapping
-    private String postUser(@RequestBody PostUserRequest userRequest){
-        User user = userRequest.buildUser();
-        Integer id = userService.createUser(user);
+    private String postUser(@RequestBody @Valid PostUserRequest userRequest) {
+        Integer id = userService.createUser(userRequest);
         return "currentUri/" + id;
     }
 
@@ -47,7 +47,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    private void updateUser(@RequestBody PostUserRequest request, @PathVariable Integer id) {
-        userService.updateUser(request.buildUser(), id);
+    private void updateUser(@RequestBody PutUserRequest userRequest, @PathVariable Integer id) {
+        userService.updateUser(userRequest, id);
     }
 }

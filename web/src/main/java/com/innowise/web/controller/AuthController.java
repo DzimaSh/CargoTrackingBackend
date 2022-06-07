@@ -1,15 +1,13 @@
 package com.innowise.web.controller;
 
-import com.innowise.web.dto.auth.request.AuthRequest;
-import com.innowise.web.dto.auth.request.LogoutRequest;
-import com.innowise.web.dto.auth.request.RefreshJwtRequest;
+import com.innowise.web.dto.auth.AuthRequest;
+import com.innowise.web.dto.auth.LogoutRequest;
+import com.innowise.web.dto.auth.RefreshJwtRequest;
 import com.innowise.web.exception.ValidationException;
 import com.innowise.web.security.AuthService;
-import com.innowise.web.security.jwt.JwtUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

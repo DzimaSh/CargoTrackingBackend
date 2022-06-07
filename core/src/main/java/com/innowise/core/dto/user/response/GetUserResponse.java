@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 @Setter
 @NoArgsConstructor
 public class GetUserResponse {
+
     private Integer id;
     private String name;
     private String surname;

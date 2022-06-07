@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: ${CORE_SERVER_PORT}
 
 spring:
   application:
@@ -7,8 +7,8 @@ spring:
 
   datasource:
     url: jdbc:postgresql://localhost:5432/trucking
-    username: postgres
-    password: shushkevich
+    username: ${DB_USER_USERNAME}
+    password: ${DB_USER_PASSWORD}
 
   jpa:
     hibernate:
