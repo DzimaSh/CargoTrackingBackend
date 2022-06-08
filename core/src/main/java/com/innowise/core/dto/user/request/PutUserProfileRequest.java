@@ -1,6 +1,5 @@
 package com.innowise.core.dto.user.request;
 
-import com.innowise.core.entity.user.User;
 import lombok.*;
 
 import javax.validation.constraints.NotEmpty;
@@ -33,13 +32,4 @@ public class PutUserProfileRequest {
     @Size(max = 5, message = "Flat number is too long")
     private String flat;
 
-    public void updateUserFromRequest(User userToUpdate) {
-        userToUpdate.setName(this.getName());
-        userToUpdate.setSurname(this.getSurname());
-        userToUpdate.setPatronymic(this.getPatronymic());
-        userToUpdate.setBornDate(this.getBornDate());
-        userToUpdate.setTown(this.getTown());
-        userToUpdate.setStreet(this.getStreet());
-        userToUpdate.setFlat(this.getFlat());
-    }
 }

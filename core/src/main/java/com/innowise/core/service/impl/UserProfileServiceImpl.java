@@ -26,7 +26,7 @@ public class UserProfileServiceImpl implements UserProfileService {
     public void updateUserProfile(PutUserProfileRequest userProfileRequest, Integer id) {
         User userToUpdate = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User with id " + id + " not found", HttpStatus.NOT_FOUND));
-        userProfileRequest.updateUserFromRequest(userToUpdate);
+        updateUserFromRequest(userProfileRequest, userToUpdate);
         userRepository.save(userToUpdate);
     }
 
@@ -36,5 +36,15 @@ public class UserProfileServiceImpl implements UserProfileService {
                 .orElseThrow(() -> new UserNotFoundException("User with id " + id + " not found", HttpStatus.NOT_FOUND));
         userToUpdate.setPassword(newPassword);
         userRepository.save(userToUpdate);
+    }
+
+    private void updateUserFromRequest(PutUserProfileRequest userProfileRequest, User userToUpdate) {
+        userToUpdate.setName(userProfileRequest.getName());
+        userToUpdate.setSurname(userProfileRequest.getSurname());
+        userToUpdate.setPatronymic(userProfileRequest.getPatronymic());
+        userToUpdate.setBornDate(userProfileRequest.getBornDate());
+        userToUpdate.setTown(userProfileRequest.getTown());
+        userToUpdate.setStreet(userProfileRequest.getStreet());
+        userToUpdate.setFlat(userProfileRequest.getFlat());
     }
 }
