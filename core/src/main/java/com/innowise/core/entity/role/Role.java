@@ -26,7 +26,7 @@ public class Role {
             joinColumns = @JoinColumn(name = "role_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
-    Set<User> users;
+    private Set<User> users;
 
     public Role(Integer id, Roles role) {
         this.id = id;

@@ -46,6 +46,7 @@ public class User {
 
     @Column(name = "passport_number")
     private String passportNum;
+
     @Column(name = "passport_issued_by")
     private String issuedBy;
 

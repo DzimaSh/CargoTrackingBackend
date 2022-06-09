@@ -31,8 +31,8 @@ public class User_ {
 
     public static final String ID = "id";
     public static final String NAME = "name";
-    public static final String SURNAME = "lastName";
-    public static final String PATRONYMIC = "gradYear";
+    public static final String SURNAME = "surname";
+    public static final String PATRONYMIC = "patronymic";
     public static final String CLIENT_ID = "clientId";
     public static final String BORN_DATE = "bornDate";
     public static final String EMAIL = "email";
