@@ -3,6 +3,14 @@ databaseChangeLog:
   - changeSet:
       id: 7
       author: shushkevich
+      comment: "Create client subject status enum type"
+      changes:
+        - sql:
+            endDetemiter: \nGO
+            sql: CREATE TYPE client_subject_status_enum AS ENUM ('PRIVATE', 'LEGAL');
+  - changeSet:
+      id: 8
+      author: shushkevich
       comment: "Create clients table"
       changes:
         createTable:
@@ -21,8 +29,8 @@ databaseChangeLog:
                 constraints:
                   nullable: false
             - column:
-                name: status
-                type: varchar(30)
+                name: subject_status
+                type: client_subject_status_enum
                 constraints:
                   nullable: false
             - column:
@@ -35,5 +43,43 @@ databaseChangeLog:
             - column:
                 name: delete_date
                 type: timestamp
+  - changeSet:
+      id: 9
+      author: shushkevich
+      comment: "Create client activity status enum"
+      changes:
+        - sql:
+            endDeterminer: \nGO
+            sql: CREATE TYPE client_activity_status_enum as ENUM ('ACTIVATED', 'DEACTIVATED')
+  - changeSet:
+      id: 10
+      author: shushkevich
+      comment: "Create client activity status history table"
+      changes:
+        createTable:
+          tableName: clients_activity_status_history
+          columns:
+            - column:
+                name: id
+                type: int
+                autoIncrement: true
+                constraints:
+                  primaryKey: true
+                  nullable: false
+            - column:
+                name: status
+                type: client_activity_status_enum
                 constraints:
                   nullable: false
+            - column:
+                name: date
+                type: timestamp
+                constraints:
+                  nullable: false
+            - column:
+                name: client_id
+                type: int
+                constraints:
+                  nullable: false
+                  foreignKeyName: fk_clinet_id
+                  references: clients(id)

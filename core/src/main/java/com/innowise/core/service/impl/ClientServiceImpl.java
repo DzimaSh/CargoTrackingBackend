@@ -5,7 +5,7 @@ import com.innowise.core.dto.client.request.*;
 import com.innowise.core.dto.client.response.*;
 import com.innowise.core.entity.client.Client;
 import com.innowise.core.entity.user.User;
-import com.innowise.core.exceprtion.UserNotFoundException;
+import com.innowise.core.exceprtion.ClientException;
 import com.innowise.core.repository.ClientRepository;
 import com.innowise.core.repository.UserRepository;
 import com.innowise.core.service.ClientService;
@@ -29,7 +29,7 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public GetClientResponse getClientById(Integer id) {
         Client client = clientRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("not found", HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ClientException("Client with id " + id + " not found" , HttpStatus.NOT_FOUND));
         return new GetClientResponse(client);
     }
 
@@ -57,6 +57,14 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public void updateClient(PutClientRequest clientRequest, Integer id) {
+        Client clientToUpdate = clientRepository.findById(id)
+                .orElseThrow(() -> new ClientException("Client with id " + id + " not found" , HttpStatus.NOT_FOUND));
+        updateClientFromRequest(clientRequest, clientToUpdate);
+        clientRepository.save(clientToUpdate);
+    }
 
+    private void updateClientFromRequest(PutClientRequest clientRequest, Client clientToUpdate) {
+        clientToUpdate.setName(clientRequest.getName());
+        clientToUpdate.setSubjectStatus(clientRequest.getStatus());
     }
 }

@@ -1,13 +1,17 @@
 package com.innowise.core.entity.client;
 
-import com.innowise.core.entity.enums.ClientStatus;
+import com.innowise.core.entity.enums.ClientSubjectStatus;
 import com.innowise.core.entity.user.User;
+import com.vladmihalcea.hibernate.type.basic.PostgreSQLEnumType;
 import lombok.*;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
 
 @Entity(name = "clients")
+@TypeDef(name = "enum_type", typeClass = PostgreSQLEnumType.class)
 @Builder
 @Data
 @AllArgsConstructor
@@ -21,7 +25,8 @@ public class Client {
     private String name;
 
     @Enumerated(EnumType.STRING)
-    private ClientStatus status;
+    @Type(type = "enum_type")
+    private ClientSubjectStatus subjectStatus;
 
     @OneToOne
     @JoinColumn(name = "admin_id", referencedColumnName = "id")

@@ -21,6 +21,11 @@ public class CoreControllerAdvisor {
         return buildResponse(ex.getStatus(), List.of(ex.getMessage()));
     }
 
+    @ExceptionHandler(ClientException.class)
+    public ResponseEntity<ErrorResponse> handleClientException(ClientException ex) {
+        return buildResponse(ex.getStatus(), List.of(ex.getMessage()));
+    }
+
     private ResponseEntity<ErrorResponse> buildResponse(HttpStatus status, List<String> errors) {
         ErrorResponse response = ErrorResponse.builder()
                 .status(status.value())

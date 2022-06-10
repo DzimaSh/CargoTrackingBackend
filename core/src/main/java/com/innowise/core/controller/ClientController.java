@@ -1,6 +1,7 @@
 package com.innowise.core.controller;
 
 import com.innowise.core.dto.client.request.PostClientRequest;
+import com.innowise.core.dto.client.request.PutClientRequest;
 import com.innowise.core.dto.client.response.GetClientResponse;
 import com.innowise.core.service.ClientService;
 import lombok.RequiredArgsConstructor;
@@ -28,5 +29,11 @@ public class ClientController {
                             HttpServletResponse response) throws IOException {
         Integer currentId = clientService.createClient(clientRequest);
         response.sendRedirect("/api/clients/" + currentId);
+    }
+
+    @PutMapping("/{clientId}")
+    private void updateClient(@RequestBody PutClientRequest clientRequest,
+                              @PathVariable Integer clientId) {
+        clientService.updateClient(clientRequest, clientId);
     }
 }

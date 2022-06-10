@@ -1,6 +1,6 @@
 package com.innowise.core.entity.enums;
 
-public enum ClientStatus {
+public enum ClientSubjectStatus {
     PRIVATE,
     LEGAL;
 }

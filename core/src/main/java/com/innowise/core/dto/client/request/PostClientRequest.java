@@ -2,12 +2,10 @@ package com.innowise.core.dto.client.request;
 
 import com.innowise.core.dto.user.request.PostUserRequest;
 import com.innowise.core.entity.client.Client;
-import com.innowise.core.entity.enums.ClientStatus;
+import com.innowise.core.entity.enums.ClientSubjectStatus;
 import com.innowise.core.entity.enums.Roles;
 import com.innowise.core.validation.annotations.UserOnlyWithRole;
 import lombok.*;
-
-import java.sql.Timestamp;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,7 +15,7 @@ public class PostClientRequest {
 
     private String name;
 
-    private ClientStatus status;
+    private ClientSubjectStatus status;
 
     @UserOnlyWithRole(role = Roles.ADMIN)
     private PostUserRequest adminInfo;
@@ -25,9 +23,9 @@ public class PostClientRequest {
     public Client buildClientFromRequest() {
         return Client.builder()
                 .name(this.name)
-                .status(this.status)
+                .subjectStatus(this.status)
                 .adminInfo(this.adminInfo.buildUser())
-                .deleteDate(new Timestamp(0))
+                .deleteDate(null)
                 .build();
     }
 }
