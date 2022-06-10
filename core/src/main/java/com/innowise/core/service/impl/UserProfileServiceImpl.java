@@ -45,6 +45,7 @@ public class UserProfileServiceImpl implements UserProfileService {
         userToUpdate.setBornDate(userProfileRequest.getBornDate());
         userToUpdate.setTown(userProfileRequest.getTown());
         userToUpdate.setStreet(userProfileRequest.getStreet());
+        userToUpdate.setHouse(userProfileRequest.getHouse());
         userToUpdate.setFlat(userProfileRequest.getFlat());
     }
 }

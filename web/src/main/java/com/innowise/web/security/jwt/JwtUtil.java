@@ -20,7 +20,7 @@ public class JwtUtil {
 
     public String buildAccessToken(GetUserResponse user) {
         Claims claims = new DefaultClaims();
-        claims.putIfAbsent("roles", getUserRolesNames(user.getUserRoles()));
+        claims.putIfAbsent("auth", getUserRolesNames(user.getUserRoles()));
         if (user.getClientId() != null) {
             claims.putIfAbsent("clientId", user.getClientId());
         }

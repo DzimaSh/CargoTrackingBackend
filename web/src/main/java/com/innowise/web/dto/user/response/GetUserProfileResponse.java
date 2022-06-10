@@ -17,6 +17,7 @@ public class GetUserProfileResponse {
     private Date bornDate;
     private String town;
     private String street;
+    private String house;
     private String flat;
     private String passportNum;
     private String issuedBy;

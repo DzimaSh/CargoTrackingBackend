@@ -22,6 +22,7 @@ public class GetUserProfileResponse {
     private Date bornDate;
     private String town;
     private String street;
+    private String house;
     private String flat;
     private String passportNum;
     private String issuedBy;
@@ -37,6 +38,7 @@ public class GetUserProfileResponse {
         bornDate = user.getBornDate();
         town = user.getTown();
         street = user.getStreet();
+        house = user.getHouse();
         flat = user.getFlat();
         passportNum = user.getPassportNum();
         issuedBy = user.getIssuedBy();
