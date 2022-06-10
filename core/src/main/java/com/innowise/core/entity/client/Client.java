@@ -28,7 +28,7 @@ public class Client {
     @Type(type = "enum_type")
     private ClientSubjectStatus subjectStatus;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "admin_id", referencedColumnName = "id")
     private User adminInfo;
 

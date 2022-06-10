@@ -1,16 +1,15 @@
 package com.innowise.core.service.impl;
 
 import com.innowise.core.controller.util.GetClientsFilterParams;
-import com.innowise.core.controller.util.GetUsersFilterParams;
 import com.innowise.core.dto.client.request.*;
 import com.innowise.core.dto.client.response.*;
-import com.innowise.core.dto.user.response.GetUserResponse;
-import com.innowise.core.dto.user.response.GetUsersResponse;
 import com.innowise.core.entity.client.Client;
+import com.innowise.core.entity.client.ClientActivity;
 import com.innowise.core.entity.client.Client_;
+import com.innowise.core.entity.enums.ClientActivationStatus;
 import com.innowise.core.entity.user.User;
-import com.innowise.core.entity.user.User_;
 import com.innowise.core.exceprtion.ClientException;
+import com.innowise.core.repository.ClientActivityRepository;
 import com.innowise.core.repository.ClientRepository;
 import com.innowise.core.repository.UserRepository;
 import com.innowise.core.service.ClientService;
@@ -21,12 +20,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import javax.persistence.metamodel.EntityType;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -38,7 +36,7 @@ public class ClientServiceImpl implements ClientService {
 
     private final ClientRepository clientRepository;
     private final UserRepository userRepository;
-    private final EntityManager entityManager;
+    private final ClientActivityRepository clientActivityRepository;
 
     @Override
     public GetClientResponse getClientById(Integer id) {
@@ -56,7 +54,9 @@ public class ClientServiceImpl implements ClientService {
         } else {
             client.setAdminInfo(userRepository.save(client.getAdminInfo()));
         }
-        return clientRepository.save(client).getId();
+        client = clientRepository.save(client);
+        activateClient(client);
+        return client.getId();
     }
 
     @Override
@@ -88,10 +88,26 @@ public class ClientServiceImpl implements ClientService {
         clientRepository.save(clientToUpdate);
     }
 
+    @Override
+    public void activateClient(Integer clientId) {
+        Client client = clientRepository.findById(clientId)
+                .orElseThrow(() -> new ClientException("Client with id " + clientId + " not found" , HttpStatus.NOT_FOUND));
+        activateClient(client);
+    }
+
+    @Override
+    public void activateClient(Client client) {
+        if (client.getDeleteDate() != null) {
+            clientActivityRepository.save(buildAction(client, ClientActivationStatus.ACTIVATED));
+            client.setDeleteDate(null);
+            clientRepository.save(client);
+        }
+        else
+            throw new ClientException("Client with id " + client.getId() + " is already activated", HttpStatus.CONFLICT);
+    }
+
 
     private Predicate filteringClientsToPredicate(Root<Client> root, CriteriaQuery query, CriteriaBuilder builder, GetClientsFilterParams params) {
-        EntityType<Client> client = entityManager.getMetamodel().entity(Client.class);
-        query.multiselect();
         List<Predicate> predicates = new ArrayList<>();
         if (params.getName() != null)
             predicates.add(builder.equal(root.get(Client_.name), params.getName()));
@@ -103,5 +119,13 @@ public class ClientServiceImpl implements ClientService {
     private void updateClientFromRequest(PutClientRequest clientRequest, Client clientToUpdate) {
         clientToUpdate.setName(clientRequest.getName());
         clientToUpdate.setSubjectStatus(clientRequest.getStatus());
+    }
+
+    private ClientActivity buildAction(Client client, ClientActivationStatus action) {
+        return ClientActivity.builder()
+                .activationStatus(action)
+                .date(new Timestamp(System.currentTimeMillis()))
+                .client(client)
+                .build();
     }
 }

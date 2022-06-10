@@ -7,6 +7,8 @@ import com.innowise.core.entity.enums.Roles;
 import com.innowise.core.validation.annotations.UserOnlyWithRole;
 import lombok.*;
 
+import java.sql.Timestamp;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -25,7 +27,7 @@ public class PostClientRequest {
                 .name(this.name)
                 .subjectStatus(this.status)
                 .adminInfo(this.adminInfo.buildUser())
-                .deleteDate(null)
+                .deleteDate(new Timestamp(System.currentTimeMillis()))
                 .build();
     }
 }

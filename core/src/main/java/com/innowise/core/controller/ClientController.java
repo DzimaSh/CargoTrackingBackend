@@ -50,4 +50,9 @@ public class ClientController {
                               @PathVariable Integer clientId) {
         clientService.updateClient(clientRequest, clientId);
     }
+
+    @PutMapping("activate/{clientId}")
+    private void activateClient(@PathVariable Integer clientId) {
+        clientService.activateClient(clientId);
+    }
 }
