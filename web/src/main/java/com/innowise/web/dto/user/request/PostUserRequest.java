@@ -2,6 +2,7 @@ package com.innowise.web.dto.user.request;
 
 import com.innowise.web.enums.Roles;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
@@ -27,6 +28,7 @@ public class PostUserRequest {
 
     private Integer clientId;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date bornDate;
 
     @NotEmpty(message = "Email is required")
