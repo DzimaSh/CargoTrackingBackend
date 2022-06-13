@@ -30,14 +30,12 @@ public class ClientController {
 
     @GetMapping
     private GetClientsResponse getClients(GetClientsFilterParams clientsFilterParams) {
-        return clientService.getAllClientsByFilterParams(clientsFilterParams);
+        return clientService.getClientsByFilterParams(clientsFilterParams);
     }
 
     @PostMapping
-    private void postClient(@RequestBody @Valid PostClientRequest clientRequest,
-                            HttpServletResponse response) throws IOException {
-        Integer currentId = clientService.createClient(clientRequest);
-        response.sendRedirect("/api/clients/" + currentId);
+    private Integer postClient(@RequestBody @Valid PostClientRequest clientRequest){
+        return clientService.createClient(clientRequest);
     }
 
     @DeleteMapping

@@ -1,6 +1,5 @@
 package com.innowise.core.entity.user;
 
-import com.innowise.core.entity.client.Client;
 import com.innowise.core.entity.role.Role;
 import lombok.*;
 import javax.persistence.*;

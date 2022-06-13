@@ -60,7 +60,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public GetClientsResponse getAllClientsByFilterParams(GetClientsFilterParams params) {
+    public GetClientsResponse getClientsByFilterParams(GetClientsFilterParams params) {
         Page<Client> page = clientRepository.findAll(((root, query, builder) ->
                     filteringClientsToPredicate(root, query, builder, params)
                 ),
@@ -76,6 +76,7 @@ public class ClientServiceImpl implements ClientService {
         ids.forEach(id -> {
             Client client = clientRepository.findById(id)
                     .orElseThrow(() -> new ClientException("Client with id " + id + " not found" , HttpStatus.NOT_FOUND));
+            clientActivityRepository.deleteByClient(client);
             clientRepository.delete(client);
         });
     }

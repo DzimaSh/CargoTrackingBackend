@@ -1,5 +1,6 @@
 package com.innowise.web.controller.util;
 
+import com.innowise.web.enums.Roles;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -31,7 +32,7 @@ public class GetUsersFilterParams {
 
     private String flat;
 
-    private String[] roles;
+    private Roles[] roles;
 
     private Integer pageSize = 5;
 
