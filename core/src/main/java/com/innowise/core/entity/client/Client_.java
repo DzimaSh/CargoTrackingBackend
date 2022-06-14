@@ -17,12 +17,10 @@ public class Client_ {
     public static volatile SingularAttribute<Client, ClientSubjectStatus> subjectStatus;
     public static volatile SingularAttribute<Client, User> adminInfo;
     public static volatile SingularAttribute<Client, Date> deleteDate;
-    public static volatile SetAttribute<Client, ClientActivity> clientActivity;
 
     public static final String ID = "id";
     public static final String NAME = "name";
     public static final String SUBJECT_STATUS = "subjectStatus";
     public static final String ADMIN_INFO = "adminInfo";
     public static final String DELETE_DATE = "deleteDate";
-    public static final String CLIENT_ACTIVITY = "clientActivity";
 }

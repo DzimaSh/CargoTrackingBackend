@@ -12,8 +12,6 @@ import com.innowise.core.entity.enums.Roles;
 import com.innowise.core.entity.user.User_;
 import com.innowise.core.exceprtion.UserExistsException;
 import com.innowise.core.exceprtion.UserNotFoundException;
-import com.innowise.core.repository.ClientActivityRepository;
-import com.innowise.core.repository.ClientRepository;
 import com.innowise.core.repository.RoleRepository;
 import com.innowise.core.repository.UserRepository;
 import com.innowise.core.service.UserService;
@@ -39,8 +37,6 @@ public class UserServiceImpl implements UserService {
     private final EntityManager entityManager;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-    private final ClientRepository clientRepository;
-    private final ClientActivityRepository clientActivityRepository;
     private final Validator validator;
 
     @Override

@@ -9,7 +9,6 @@ import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.Set;
 
 @Entity(name = "clients")
 @TypeDef(name = "enum_type", typeClass = PostgreSQLEnumType.class)
@@ -35,8 +34,4 @@ public class Client {
     @Column(name = "delete_date")
     private Timestamp deleteDate;
 
-    //@PreRemove
-    public void nullifyClientInUser() {
-        adminInfo.setClient(null);
-    }
 }
