@@ -48,8 +48,11 @@ public class ClientController {
             throw new ValidationException(bindingResult);
 
         PostUserRequest userRequest = clientRequest.getAdminInfo();
-        if (userRequest.getPassword() != null)
+        try {
+            passwordEncoder.upgradeEncoding(userRequest.getPassword());
+        } catch (IllegalArgumentException ex) {
             userRequest.setPassword(passwordEncoder.encode(userRequest.getPassword()));
+        }
 
         Integer clientId = companyClientFeignClient.postClient(clientRequest);
         response.sendRedirect(request.getRequestURL()
