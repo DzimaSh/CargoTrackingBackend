@@ -38,7 +38,6 @@ public class GetUserResponse {
         name = user.getName();
         surname = user.getSurname();
         patronymic = user.getPatronymic();
-        //clientId = user.getClientId();
         clientId = user.getClient() != null ? user.getClient().getId() : null;
         bornDate = user.getBornDate();
         email = user.getEmail();
