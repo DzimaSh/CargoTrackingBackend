@@ -5,11 +5,13 @@ import com.innowise.web.dto.client.request.PostClientRequest;
 import com.innowise.web.dto.client.request.PutClientRequest;
 import com.innowise.web.dto.client.response.GetClientResponse;
 import com.innowise.web.dto.client.response.GetClientsResponse;
+import com.innowise.web.dto.user.request.PostUserRequest;
 import com.innowise.web.exception.ValidationException;
 import com.innowise.web.feign.CompanyClientFeignClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +27,7 @@ import java.util.List;
 public class ClientController {
 
     private final CompanyClientFeignClient companyClientFeignClient;
+    private final PasswordEncoder passwordEncoder;
 
     @GetMapping("/{clientId}")
     public ResponseEntity<GetClientResponse> getClient(@PathVariable Integer clientId) {
@@ -38,8 +41,16 @@ public class ClientController {
 
     @PostMapping
     public void postClient(@RequestBody @Valid PostClientRequest clientRequest,
+                            BindingResult bindingResult,
                             HttpServletRequest request,
                             HttpServletResponse response) throws IOException {
+        if (bindingResult.hasErrors())
+            throw new ValidationException(bindingResult);
+
+        PostUserRequest userRequest = clientRequest.getAdminInfo();
+        if (userRequest.getPassword() != null)
+            userRequest.setPassword(passwordEncoder.encode(userRequest.getPassword()));
+
         Integer clientId = companyClientFeignClient.postClient(clientRequest);
         response.sendRedirect(request.getRequestURL()
                 .append("/")

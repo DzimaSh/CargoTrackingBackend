@@ -9,6 +9,7 @@ import com.innowise.core.entity.client.Client_;
 import com.innowise.core.entity.enums.ClientActivationStatus;
 import com.innowise.core.entity.user.User;
 import com.innowise.core.exceprtion.ClientException;
+import com.innowise.core.exceprtion.UserExistsException;
 import com.innowise.core.repository.ClientActivityRepository;
 import com.innowise.core.repository.ClientRepository;
 import com.innowise.core.repository.UserRepository;
@@ -24,6 +25,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.validation.Validator;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +39,7 @@ public class ClientServiceImpl implements ClientService {
     private final ClientRepository clientRepository;
     private final UserRepository userRepository;
     private final ClientActivityRepository clientActivityRepository;
+    private final Validator validator;
 
     @Override
     public GetClientResponse getClientById(Integer id) {
@@ -49,12 +52,22 @@ public class ClientServiceImpl implements ClientService {
     public Integer createClient(PostClientRequest clientRequest) {
         Client client = clientRequest.buildClientFromRequest();
         Optional<User> userOptional = userRepository.findOne(Example.of(client.getAdminInfo()));
+        User adminUser;
         if (userOptional.isPresent()) {
-            client.setAdminInfo(userOptional.get());
+            adminUser = userOptional.get();
+            if (adminUser.getClient() == null) {
+                client.setAdminInfo(adminUser);
+            } else {
+                throw new UserExistsException("This admin is already working with client " + adminUser.getClient().getName(), HttpStatus.CONFLICT);
+            }
+
         } else {
-            client.setAdminInfo(userRepository.save(client.getAdminInfo()));
+            validator.validate(clientRequest.getAdminInfo());
+            adminUser = client.getAdminInfo();
         }
-        client = clientRepository.save(client);
+        adminUser.addClient(client);
+        client = userRepository.save(adminUser).getClient();
+
         activateClient(client);
         return client.getId();
     }
@@ -76,8 +89,10 @@ public class ClientServiceImpl implements ClientService {
         ids.forEach(id -> {
             Client client = clientRepository.findById(id)
                     .orElseThrow(() -> new ClientException("Client with id " + id + " not found" , HttpStatus.NOT_FOUND));
-            clientActivityRepository.deleteByClient(client);
-            clientRepository.delete(client);
+
+            User user = userRepository.getByClient(client);
+            user.removeClient();
+            userRepository.save(user);
         });
     }
 

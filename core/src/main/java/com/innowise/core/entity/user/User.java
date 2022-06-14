@@ -1,5 +1,6 @@
 package com.innowise.core.entity.user;
 
+import com.innowise.core.entity.client.Client;
 import com.innowise.core.entity.role.Role;
 import lombok.*;
 import javax.persistence.*;
@@ -22,8 +23,11 @@ public class User {
 
     private String patronymic;
 
-    @Column(name = "client_id")
-    private Integer clientId;
+    @OneToOne(fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    @JoinColumn(name = "client_id", referencedColumnName = "id")
+    private Client client;
 
     @Column(name = "born_date")
     private Date bornDate;
@@ -58,4 +62,16 @@ public class User {
     )
     private Set<Role> roles;
 
+
+    public void addClient(Client client) {
+        client.setAdminInfo(this);
+        this.client = client;
+    }
+
+    public void removeClient() {
+        if (client != null) {
+            client.setAdminInfo(null);
+            this.client = null;
+        }
+    }
 }

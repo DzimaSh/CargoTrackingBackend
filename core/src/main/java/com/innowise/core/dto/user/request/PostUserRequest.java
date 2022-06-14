@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotNull;
 import java.sql.Date;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -56,7 +57,6 @@ public class PostUserRequest {
                 name(this.name).
                 surname(this.surname).
                 patronymic(this.patronymic).
-                clientId(this.clientId).
                 bornDate(this.bornDate).
                 email(this.email).
                 town(this.town).

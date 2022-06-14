@@ -1,5 +1,6 @@
 package com.innowise.core.entity.user;
 
+import com.innowise.core.entity.client.Client;
 import com.innowise.core.entity.role.Role;
 import org.hibernate.metamodel.model.domain.internal.SetAttributeImpl;
 
@@ -16,7 +17,7 @@ public class User_ {
     public static volatile SingularAttribute<User, String> name;
     public static volatile SingularAttribute<User, String> surname;
     public static volatile SingularAttribute<User, String> patronymic;
-    public static volatile SingularAttribute<User, Integer> clientId;
+    public static volatile SingularAttribute<User, Client> client;
     public static volatile SingularAttribute<User, Date> bornDate;
     public static volatile SingularAttribute<User, String> email;
     public static volatile SingularAttribute<User, String> town;
@@ -33,7 +34,7 @@ public class User_ {
     public static final String NAME = "name";
     public static final String SURNAME = "surname";
     public static final String PATRONYMIC = "patronymic";
-    public static final String CLIENT_ID = "clientId";
+    public static final String CLIENT = "client";
     public static final String BORN_DATE = "bornDate";
     public static final String EMAIL = "email";
     public static final String TOWN = "town";

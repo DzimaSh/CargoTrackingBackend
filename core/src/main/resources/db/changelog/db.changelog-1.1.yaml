@@ -34,13 +34,6 @@ databaseChangeLog:
                 constraints:
                   nullable: false
             - column:
-                name: admin_id
-                type: int
-                constraints:
-                  foreignKeyName: fk_admin_id
-                  references: users(id)
-                  nullable: false
-            - column:
                 name: delete_date
                 type: timestamp
   - changeSet:
@@ -79,7 +72,35 @@ databaseChangeLog:
             - column:
                 name: client_id
                 type: int
-                constraints:
-                  nullable: false
-                  foreignKeyName: fk_clinet_id
-                  references: clients(id)
+  - changeSet:
+      id: 11
+      author: shushkevich
+      comment: "Add foreign keys"
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: client_id
+            baseTableName: users
+            baseTableSchemaName: public
+            constraintName: fk_user_to_client
+            onDelete: SET NULL
+            onUpdate: CASCADE
+            referencedColumnNames: id
+            referencedTableName: clients
+            referencedTableSchemaName: public
+            validate: true
+  - changeSet:
+      id: 12
+      author: shushkevich
+      comment: "Add foreign keys to each"
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: client_id
+            baseTableName: clients_activity_status_history
+            baseTableSchemaName: public
+            constraintName: fk_history_to_client
+            onDelete: CASCADE
+            onUpdate: CASCADE
+            referencedColumnNames: id
+            referencedTableName: clients
+            referencedTableSchemaName: public
+            validate: true

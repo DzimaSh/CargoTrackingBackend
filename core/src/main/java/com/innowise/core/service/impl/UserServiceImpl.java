@@ -5,7 +5,6 @@ import com.innowise.core.dto.user.request.PostUserRequest;
 import com.innowise.core.dto.user.request.PutUserRequest;
 import com.innowise.core.dto.user.response.GetUserResponse;
 import com.innowise.core.dto.user.response.GetUsersResponse;
-import com.innowise.core.entity.client.Client;
 import com.innowise.core.entity.role.Role;
 import com.innowise.core.entity.role.Role_;
 import com.innowise.core.entity.user.User;
@@ -86,10 +85,6 @@ public class UserServiceImpl implements UserService {
 
             if (isUserSys_Admin(user) && isSys_AdminExists())
                 throw new UserExistsException("You can't delete sys_admin", HttpStatus.FORBIDDEN);
-
-            Client client = clientRepository.getClientByAdminInfo(user);
-            clientActivityRepository.deleteByClient(client);
-            clientRepository.delete(client);
 
             userRepository.delete(user);
         });
