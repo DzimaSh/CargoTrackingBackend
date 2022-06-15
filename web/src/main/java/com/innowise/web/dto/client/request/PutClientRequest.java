@@ -4,6 +4,7 @@ import com.innowise.web.enums.ClientSubjectStatus;
 import lombok.*;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Getter
@@ -16,7 +17,7 @@ public class PutClientRequest {
     @Size(max = 30, message = "company name size is too big")
     private String name;
 
-    @NotEmpty(message = "company status is required")
+    @NotNull(message = "company status is required")
     private ClientSubjectStatus status;
 
 }

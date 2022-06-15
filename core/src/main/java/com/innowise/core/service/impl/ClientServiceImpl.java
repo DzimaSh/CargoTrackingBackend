@@ -7,6 +7,7 @@ import com.innowise.core.entity.client.Client;
 import com.innowise.core.entity.client.ClientActivity;
 import com.innowise.core.entity.client.Client_;
 import com.innowise.core.entity.enums.ClientActivationStatus;
+import com.innowise.core.entity.enums.Roles;
 import com.innowise.core.entity.user.User;
 import com.innowise.core.exceprtion.ClientException;
 import com.innowise.core.exceprtion.UserExistsException;
@@ -63,6 +64,10 @@ public class ClientServiceImpl implements ClientService {
 
         } else {
             validator.validate(clientRequest.getAdminInfo());
+
+            if (clientRequest.getAdminInfo().getUserRoles().contains(Roles.SYS_ADMIN))
+                throw new UserExistsException("sys admin already exists", HttpStatus.CONFLICT);
+
             adminUser = client.getAdminInfo();
         }
         adminUser.addClient(client);
