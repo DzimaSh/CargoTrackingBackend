@@ -49,7 +49,7 @@ public class PostUserRequest {
 
     private String issuedBy;
 
-    private Set<Roles> userRoles;
+    //private Set<Roles> userRoles;
 
     public User buildUser() {
         return User.builder().
@@ -66,10 +66,10 @@ public class PostUserRequest {
                 password(this.password).
                 passportNum(this.passportNum).
                 issuedBy(this.issuedBy).
-                roles(this.userRoles.
+                /*roles(this.userRoles.
                         stream().
                         map(userRole -> new Role(userRole.ordinal(), userRole)).
-                        collect(Collectors.toSet())).
+                        collect(Collectors.toSet())).*/
                 build();
     }
 }

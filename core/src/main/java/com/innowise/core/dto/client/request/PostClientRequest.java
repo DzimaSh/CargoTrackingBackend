@@ -19,7 +19,7 @@ public class PostClientRequest {
 
     private ClientSubjectStatus status;
 
-    @UserOnlyWithRole(role = Roles.ADMIN)
+    //@UserOnlyWithRole(role = Roles.ADMIN)
     private PostUserRequest adminInfo;
 
     public Client buildClientFromRequest() {

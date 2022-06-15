@@ -30,7 +30,7 @@ public class ClientController {
     }
 
     @PostMapping
-    private Integer postClient(@RequestBody @Valid PostClientRequest clientRequest){
+    private Integer postClient(@RequestBody PostClientRequest clientRequest){
         return clientService.createClient(clientRequest);
     }
 

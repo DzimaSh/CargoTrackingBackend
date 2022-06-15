@@ -8,6 +8,8 @@ import com.innowise.core.entity.client.ClientActivity;
 import com.innowise.core.entity.client.Client_;
 import com.innowise.core.entity.enums.ClientActivationStatus;
 import com.innowise.core.entity.enums.Roles;
+import com.innowise.core.entity.role.Role;
+import com.innowise.core.entity.role.Role_;
 import com.innowise.core.entity.user.User;
 import com.innowise.core.exceprtion.ClientException;
 import com.innowise.core.exceprtion.UserExistsException;
@@ -29,8 +31,10 @@ import javax.persistence.criteria.Root;
 import javax.validation.Validator;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -65,10 +69,11 @@ public class ClientServiceImpl implements ClientService {
         } else {
             validator.validate(clientRequest.getAdminInfo());
 
-            if (clientRequest.getAdminInfo().getUserRoles().contains(Roles.SYS_ADMIN))
-                throw new UserExistsException("sys admin already exists", HttpStatus.CONFLICT);
+            /*if (clientRequest.getAdminInfo().getUserRoles().contains(Roles.SYS_ADMIN))
+                throw new UserExistsException("sys admin already exists", HttpStatus.CONFLICT);*/
 
             adminUser = client.getAdminInfo();
+            adminUser.setRoles(Set.of(new Role(1, Roles.ADMIN)));
         }
         adminUser.addClient(client);
         client = userRepository.save(adminUser).getClient();
@@ -130,10 +135,11 @@ public class ClientServiceImpl implements ClientService {
 
     private Predicate filteringClientsToPredicate(Root<Client> root, CriteriaQuery query, CriteriaBuilder builder, GetClientsFilterParams params) {
         List<Predicate> predicates = new ArrayList<>();
-        if (params.getName() != null)
+        if (params.getName() != null && !params.getName().isBlank())
             predicates.add(builder.equal(root.get(Client_.name), params.getName()));
-        if (params.getStatus() != null)
-            predicates.add(builder.equal(root.get(Client_.subjectStatus), params.getStatus()));
+        if (params.getStatus() != null && !params.getStatus().isEmpty())
+            //predicates.add(role.get(Role_.role).in(Arrays.stream(params.getRoles()).map(Roles::valueOf).toArray()));
+            predicates.add(root.get(Client_.subjectStatus).in(params.getStatus()));
         return builder.and(predicates.toArray(new Predicate[]{}));
     }
 
