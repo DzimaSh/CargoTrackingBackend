@@ -7,16 +7,13 @@ import com.innowise.core.entity.client.Client;
 import com.innowise.core.entity.client.ClientActivity;
 import com.innowise.core.entity.client.Client_;
 import com.innowise.core.entity.enums.ClientActivationStatus;
-import com.innowise.core.entity.enums.Roles;
 import com.innowise.core.entity.user.User;
 import com.innowise.core.exceprtion.ClientException;
-import com.innowise.core.exceprtion.UserExistsException;
 import com.innowise.core.repository.ClientActivityRepository;
 import com.innowise.core.repository.ClientRepository;
 import com.innowise.core.repository.UserRepository;
 import com.innowise.core.service.ClientService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -30,7 +27,6 @@ import javax.validation.Validator;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -52,24 +48,9 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public Integer createClient(PostClientRequest clientRequest) {
         Client client = clientRequest.buildClientFromRequest();
-        Optional<User> userOptional = userRepository.findOne(Example.of(client.getAdminInfo()));
-        User adminUser;
-        if (userOptional.isPresent()) {
-            adminUser = userOptional.get();
-            if (adminUser.getClient() == null) {
-                client.setAdminInfo(adminUser);
-            } else {
-                throw new UserExistsException("This admin is already working with client " + adminUser.getClient().getName(), HttpStatus.CONFLICT);
-            }
+        validator.validate(clientRequest.getAdminInfo());
 
-        } else {
-            validator.validate(clientRequest.getAdminInfo());
-
-            if (clientRequest.getAdminInfo().getUserRoles().contains(Roles.SYS_ADMIN))
-                throw new UserExistsException("sys admin already exists", HttpStatus.CONFLICT);
-
-            adminUser = client.getAdminInfo();
-        }
+        User adminUser = client.getAdminInfo();
         adminUser.addClient(client);
         client = userRepository.save(adminUser).getClient();
 
@@ -130,10 +111,10 @@ public class ClientServiceImpl implements ClientService {
 
     private Predicate filteringClientsToPredicate(Root<Client> root, CriteriaQuery query, CriteriaBuilder builder, GetClientsFilterParams params) {
         List<Predicate> predicates = new ArrayList<>();
-        if (params.getName() != null)
+        if (params.getName() != null && !params.getName().isBlank())
             predicates.add(builder.equal(root.get(Client_.name), params.getName()));
-        if (params.getStatus() != null)
-            predicates.add(builder.equal(root.get(Client_.subjectStatus), params.getStatus()));
+        if (params.getStatuses() != null && !params.getStatuses().isEmpty())
+            predicates.add(root.get(Client_.subjectStatus).in(params.getStatuses()));
         return builder.and(predicates.toArray(new Predicate[]{}));
     }
 

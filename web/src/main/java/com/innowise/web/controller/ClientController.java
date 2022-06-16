@@ -40,25 +40,19 @@ public class ClientController {
     }
 
     @PostMapping
-    public void postClient(@RequestBody @Valid PostClientRequest clientRequest,
+    public ResponseEntity<String> postClient(@RequestBody @Valid PostClientRequest clientRequest,
                             BindingResult bindingResult,
-                            HttpServletRequest request,
-                            HttpServletResponse response) throws IOException {
+                            HttpServletRequest request) {
         if (bindingResult.hasErrors())
             throw new ValidationException(bindingResult);
 
-        PostUserRequest userRequest = clientRequest.getAdminInfo();
-        try {
-            passwordEncoder.upgradeEncoding(userRequest.getPassword());
-        } catch (IllegalArgumentException ex) {
-            userRequest.setPassword(passwordEncoder.encode(userRequest.getPassword()));
-        }
+        clientRequest.getAdminInfo().setPassword(passwordEncoder.encode(clientRequest.getAdminInfo().getPassword()));
 
         Integer clientId = companyClientFeignClient.postClient(clientRequest);
-        response.sendRedirect(request.getRequestURL()
+        return new ResponseEntity<>(request.getRequestURL()
                 .append("/")
                 .append(clientId)
-                .toString());
+                .toString(), HttpStatus.CREATED);
     }
 
     @DeleteMapping

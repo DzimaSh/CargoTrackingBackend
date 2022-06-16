@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -37,11 +38,17 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<String> insertUser(@RequestBody @Valid PostUserRequest userRequest, BindingResult result) {
+    public ResponseEntity<String> insertUser(@RequestBody @Valid PostUserRequest userRequest,
+                                             BindingResult result,
+                                             HttpServletRequest request) {
         if (result.hasErrors())
             throw new ValidationException(result);
         userRequest.setPassword(passwordEncoder.encode(userRequest.getPassword()));
-        return new ResponseEntity<>(usersServiceClient.postUser(userRequest), HttpStatus.CREATED);
+        Integer userId = usersServiceClient.postUser(userRequest);
+        return new ResponseEntity<>(request.getRequestURL()
+                .append("/")
+                .append(userId)
+                .toString(), HttpStatus.CREATED);
     }
 
     @DeleteMapping

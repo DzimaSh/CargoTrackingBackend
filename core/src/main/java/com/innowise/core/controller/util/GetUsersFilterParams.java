@@ -4,6 +4,7 @@ import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @ToString
@@ -29,7 +30,7 @@ public class GetUsersFilterParams {
 
     private String flat;
 
-    private String[] roles;
+    private List<String> roles;
 
     private Integer pageSize = 5;
 

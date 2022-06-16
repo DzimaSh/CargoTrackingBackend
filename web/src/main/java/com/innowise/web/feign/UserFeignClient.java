@@ -31,7 +31,7 @@ public interface UserFeignClient {
     GetUserResponse getUserByLogin(@RequestBody GetUserByLoginRequest request);
 
     @PostMapping
-    String postUser(@RequestBody PostUserRequest request);
+    Integer postUser(@RequestBody PostUserRequest request);
 
     @DeleteMapping
     void deleteUser(@RequestBody List<Integer> usersIds);
