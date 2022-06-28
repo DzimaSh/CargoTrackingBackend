@@ -112,7 +112,7 @@ public class ClientServiceImpl implements ClientService {
     private Predicate filteringClientsToPredicate(Root<Client> root, CriteriaQuery query, CriteriaBuilder builder, GetClientsFilterParams params) {
         List<Predicate> predicates = new ArrayList<>();
         if (params.getName() != null && !params.getName().isBlank())
-            predicates.add(builder.equal(root.get(Client_.name), params.getName()));
+            predicates.add(builder.like(root.get(Client_.name), params.getName() + '%'));
         if (params.getStatuses() != null && !params.getStatuses().isEmpty())
             predicates.add(root.get(Client_.subjectStatus).in(params.getStatuses()));
         return builder.and(predicates.toArray(new Predicate[]{}));
