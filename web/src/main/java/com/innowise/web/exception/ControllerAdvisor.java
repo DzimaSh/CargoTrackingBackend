@@ -35,6 +35,11 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
         return exceptionHandlingUtil.buildErrorResponseEntity(HttpStatus.BAD_REQUEST, List.of(ex.getMessage()));
     }
 
+    @ExceptionHandler(JwtAuthenticationException.class)
+    public ResponseEntity<ErrorResponse> handleJwtAuthenticationException(JwtAuthenticationException ex) {
+        return exceptionHandlingUtil.buildErrorResponseEntity(HttpStatus.BAD_REQUEST, List.of(ex.getMessage()));
+    }
+
     @ExceptionHandler(JwtException.class)
     public ResponseEntity<ErrorResponse> handleJwtException(JwtException ex) {
         return exceptionHandlingUtil.buildErrorResponseEntity(HttpStatus.UNAUTHORIZED, List.of("JWT is invalid"));

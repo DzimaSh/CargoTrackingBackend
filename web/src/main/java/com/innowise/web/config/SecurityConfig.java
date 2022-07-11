@@ -53,8 +53,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, GET_USERS_API_ENDPOINT).hasAnyAuthority(ADMIN.name(), DISPATCHER.name())
                 .antMatchers(USER_API_ENDPOINTS).hasAuthority(ADMIN.name())
                 .antMatchers(CLIENT_ENDPOINTS).hasAuthority(SYS_ADMIN.name())
-                .antMatchers(PROFILE_ENDPOINTS).hasAnyAuthority(COMPANY_OWNER.name(), MANAGER.name(),
-                        DISPATCHER.name(), DRIVER.name())
+                .antMatchers(PROFILE_ENDPOINTS).authenticated()
                 .anyRequest().authenticated();
 
         http.exceptionHandling()

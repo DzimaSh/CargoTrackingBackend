@@ -12,6 +12,6 @@ public class GetClientsFilterParams {
 
     private String name;
     private List<ClientSubjectStatus> statuses;
-    private Integer pageSize = 5;
+    private Integer pageSize = 20;
     private Integer pageNumber = 0;
 }
