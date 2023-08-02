@@ -115,28 +115,28 @@ public class UserServiceImpl implements UserService {
         EntityType<User> user = entityManager.getMetamodel().entity(User.class);
         query.multiselect();
         List<Predicate> predicates = new ArrayList<>();
-        if (params.getName() != null)
+        if (params.getName() != null && !params.getName().isBlank())
             predicates.add(builder.equal(root.get(User_.name), params.getName()));
-        if (params.getSurname() != null)
+        if (params.getSurname() != null && !params.getSurname().isBlank())
             predicates.add(builder.equal(root.get(User_.surname), params.getSurname()));
-        if (params.getPatronymic() != null)
+        if (params.getPatronymic() != null && !params.getPatronymic().isBlank())
             predicates.add(builder.equal(root.get(User_.patronymic), params.getPatronymic()));
         if (params.getBeforeBornDate() != null)
             predicates.add(builder.lessThan(root.get(User_.bornDate), new java.sql.Date(params.getBeforeBornDate().getTime())));
         if (params.getAfterBornDate() != null)
             predicates.add(builder.greaterThan(root.get(User_.bornDate), new java.sql.Date(params.getAfterBornDate().getTime())));
-        if (params.getTown() != null)
+        if (params.getTown() != null && !params.getTown().isBlank())
             predicates.add(builder.equal(root.get(User_.town), params.getTown()));
-        if (params.getStreet() != null)
+        if (params.getStreet() != null && !params.getStreet().isBlank())
             predicates.add(builder.equal(root.get(User_.street), params.getStreet()));
-        if (params.getHouse() != null)
+        if (params.getHouse() != null && !params.getHouse().isBlank())
             predicates.add(builder.equal(root.get(User_.street), params.getHouse()));
-        if (params.getFlat() != null)
+        if (params.getFlat() != null && !params.getFlat().isBlank())
             predicates.add(builder.equal(root.get(User_.flat), params.getFlat()));
-        if (params.getRoles() != null) {
+        if (params.getRoles() != null && !params.getRoles().isEmpty()) {
             SetJoin<User, Role> role = root.join(user.getSet(User_.ROLES, Role.class));
-            predicates.add(role.get(Role_.role).in(Arrays.stream(params.getRoles()).map(Roles::valueOf).toArray()));
-            query.groupBy(root.get("id")).having(builder.equal(builder.countDistinct(role), params.getRoles().length));
+            predicates.add(role.get(Role_.role).in(params.getRoles().stream().map(Roles::valueOf).toArray()));
+            query.groupBy(root.get("id")).having(builder.equal(builder.countDistinct(role), params.getRoles().size()));
         }
         return builder.and(predicates.toArray(new Predicate[]{}));
     }

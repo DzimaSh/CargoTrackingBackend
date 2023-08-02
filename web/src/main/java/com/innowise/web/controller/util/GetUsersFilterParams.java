@@ -1,11 +1,13 @@
 package com.innowise.web.controller.util;
 
+import com.innowise.web.enums.Roles;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @ToString
@@ -31,7 +33,7 @@ public class GetUsersFilterParams {
 
     private String flat;
 
-    private String[] roles;
+    private List<Roles> roles;
 
     private Integer pageSize = 5;
 

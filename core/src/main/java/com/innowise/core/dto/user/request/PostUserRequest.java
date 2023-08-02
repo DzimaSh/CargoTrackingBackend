@@ -56,7 +56,6 @@ public class PostUserRequest {
                 name(this.name).
                 surname(this.surname).
                 patronymic(this.patronymic).
-                clientId(this.clientId).
                 bornDate(this.bornDate).
                 email(this.email).
                 town(this.town).

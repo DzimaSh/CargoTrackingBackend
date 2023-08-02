@@ -36,9 +36,8 @@ public class UserController {
     }
 
     @PostMapping
-    private String postUser(@RequestBody @Valid PostUserRequest userRequest) {
-        Integer id = userService.createUser(userRequest);
-        return "currentUri/" + id;
+    private Integer postUser(@RequestBody @Valid PostUserRequest userRequest) {
+        return userService.createUser(userRequest);
     }
 
     @DeleteMapping
